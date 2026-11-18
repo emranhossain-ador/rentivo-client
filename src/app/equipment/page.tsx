@@ -1,7 +1,4 @@
 
-"use client";
-
-import { useState } from "react";
 import {
     Search,
     MapPin,
@@ -12,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import EquipmentFilter from "./_components/EquipmentSideFilter";
 import EquipmentCard from "@/components/EquipmentCard";
 
-export default function EquipmentSearchHero() {
+const AllEquipmentPage = () => {
 
     return (
         <section className="min-h-screen bg-background ">
@@ -89,4 +86,5 @@ export default function EquipmentSearchHero() {
     );
 }
 
+export default AllEquipmentPage;
 
