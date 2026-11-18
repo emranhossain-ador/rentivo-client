@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
-import { ChevronDown, Menu, Moon, Sun, User, UserPlus, Wrench, X } from "lucide-react";
+import { Menu, Moon, Sun, User, UserPlus, Wrench, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "cn";
 
@@ -10,7 +10,7 @@ type Theme = "light" | "dark";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "All Equipment", href: "/products" },
+  { label: "All Equipment", href: "/equipment" },
   { label: "Categories", href: "/categories" },
   { label: "About Us", href: "/about" },
 ] as const;

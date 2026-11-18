@@ -12,12 +12,12 @@ export default function EquipmentCard() {
         <article className="group w-full overflow-hidden rounded-[24px] border border-border bg-card shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.14)]">
 
             {/* Image section */}
-            <div className="relative h-52.5 overflow-hidden">
+            <div className="relative h-50 overflow-hidden">
                 <Image
                     src="https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
                     alt="Toyota Corolla"
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105 rounded-t-[24px]"
                 />
 
                 {/* Image overlay */}
@@ -31,7 +31,7 @@ export default function EquipmentCard() {
             </div>
 
             {/* Content */}
-            <div className="p-5">
+            <div className="p-3 md:p-4">
                 {/* Title + rating */}
                 <div className="flex items-start justify-between gap-3">
                     <Link href={'/'} className="text-lg line-clamp-1 font-bold tracking-tight text-foreground hover:text-brand">
@@ -73,7 +73,7 @@ export default function EquipmentCard() {
 
                 {/* Price + Button */}
                 <div >
-                    <Link href={`/`} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 min-h-12 w-full text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-orange-600 hover:shadow-md active:scale-95 cursor-pointer group">
+                    <Link href={`/`} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 min-h-10 w-full text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-orange-600 hover:shadow-md active:scale-95 cursor-pointer group">
                         View Details
                         <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                     </Link>
