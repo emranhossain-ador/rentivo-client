@@ -1,37 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { ChevronDown, Menu, Moon, Sun, User, UserPlus, Wrench, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "cn";
 
 type Theme = "light" | "dark";
 
-interface NavLink {
-  label: string;
-  href: string;
-  active?: boolean;
-  categories?: { label: string; href: string }[];
-}
-
-const NAV_LINKS: NavLink[] = [
-  { label: "Home", href: "/", active: true },
-  {
-    label: "All Equipment",
-    href: "/equipment",
-    categories: [
-      { label: "Excavators", href: "/equipment/excavators" },
-      { label: "Cranes", href: "/equipment/cranes" },
-      { label: "Loaders", href: "/equipment/loaders" },
-      { label: "Compactors", href: "/equipment/compactors" },
-      { label: "Power Tools", href: "/equipment/power-tools" },
-    ],
-  },
+const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "All Equipment", href: "/products" },
+  { label: "Categories", href: "/categories" },
   { label: "About Us", href: "/about" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "Contact Us", href: "/contact" },
-];
+] as const;
+
+const NAV_LINK_CLASS = "flex items-center px-4 py-2 font-medium hover:text-brand text-sm whitespace-nowrap transition-colors text-foreground";
+const ACTIVE_NAV_LINK_CLASS = "flex items-center px-4 py-2 bg-brand/5 border border-brand/50 rounded-lg font-medium text-sm whitespace-nowrap text-brand";
+
 
 function ThemeToggle({
   theme,
@@ -77,17 +63,8 @@ function ThemeToggle({
   );
 }
 
-const navLinkClasses = (active?: boolean) =>
-  cn(
-    "flex items-center rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-    active
-      ? "bg-brand font-semibold text-white shadow-sm shadow-brand/30"
-      : "text-foreground/80 hover:bg-muted hover:text-foreground"
-  );
 
-/* The theme lives on <html class="dark"> (set before hydration by the inline
-   script in layout.tsx). Subscribe to it instead of copying it into state —
-   this keeps the toggle in sync and also picks up cross-tab changes. */
+
 function subscribeToTheme(callback: () => void) {
   const observer = new MutationObserver(callback);
   observer.observe(document.documentElement, {
@@ -113,29 +90,7 @@ export default function TopNavbar() {
     getServerThemeSnapshot
   );
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  // Close the "All Equipment" dropdown on outside click / Escape.
-  useEffect(() => {
-    if (!dropdownOpen) return;
-
-    const handleMouseDown = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setDropdownOpen(false);
-    };
-
-    document.addEventListener("mousedown", handleMouseDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", handleMouseDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [dropdownOpen]);
 
   const handleThemeChange = (next: Theme) => {
     // No setState needed: the MutationObserver subscription above re-renders.
@@ -159,61 +114,26 @@ export default function TopNavbar() {
             <Wrench className="size-5" strokeWidth={2.5} />
           </span>
           <span className="text-xl font-extrabold tracking-tight">
-            <span className="text-foreground">Rental</span>
-            <span className="text-brand">Hub</span>
+            <span className="text-foreground">Rentivo</span>
           </span>
         </Link>
 
         <nav
           aria-label="Main navigation"
-          className="ml-2 hidden items-center gap-1 lg:flex"
+          className="ml-4 hidden items-center gap-1 lg:flex"
         >
-          {NAV_LINKS.map((link) =>
-            link.categories ? (
-              <div key={link.label} ref={dropdownRef} className="relative">
-                <button
-                  type="button"
-                  aria-expanded={dropdownOpen}
-                  aria-haspopup="true"
-                  onClick={() => setDropdownOpen((open) => !open)}
-                  className={cn(navLinkClasses(), "gap-1", dropdownOpen && "bg-muted text-foreground")}
-                >
-                  {link.label}
-                  <ChevronDown
-                    className={cn(
-                      "size-4 transition-transform duration-200",
-                      dropdownOpen && "rotate-180"
-                    )}
-                  />
-                </button>
-                {dropdownOpen && (
-                  <div className="absolute top-full left-0 z-50 pt-2">
-                    <div className="w-52 rounded-2xl border border-border bg-popover p-2 shadow-xl shadow-black/5">
-                      {link.categories.map((category) => (
-                        <Link
-                          key={category.href}
-                          href={category.href}
-                          onClick={() => setDropdownOpen(false)}
-                          className="block rounded-xl px-3 py-2 text-sm font-medium text-foreground/85 transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          {category.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
+          {
+            NAV_LINKS.map((link) => (
               <Link
-                key={link.href}
+                key={link.label}
                 href={link.href}
-                aria-current={link.active ? "page" : undefined}
-                className={navLinkClasses(link.active)}
+                className={link.href === '/' ? ACTIVE_NAV_LINK_CLASS : NAV_LINK_CLASS}
               >
                 {link.label}
               </Link>
-            )
-          )}
+            ))
+          }
+
         </nav>
 
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
@@ -253,48 +173,14 @@ export default function TopNavbar() {
             className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6"
           >
             {NAV_LINKS.map((link) =>
-              link.categories ? (
-                <div key={link.label} className="flex flex-col">
-                  <button
-                    type="button"
-                    aria-expanded={dropdownOpen}
-                    onClick={() => setDropdownOpen((open) => !open)}
-                    className={cn(navLinkClasses(), "w-full justify-between py-2.5")}
-                  >
-                    {link.label}
-                    <ChevronDown
-                      className={cn(
-                        "size-4 transition-transform duration-200",
-                        dropdownOpen && "rotate-180"
-                      )}
-                    />
-                  </button>
-                  {dropdownOpen && (
-                    <div className="mt-1 ml-5 flex flex-col gap-1 border-l-2 border-border pl-3">
-                      {link.categories.map((category) => (
-                        <Link
-                          key={category.href}
-                          href={category.href}
-                          onClick={() => setMobileOpen(false)}
-                          className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                          {category.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  aria-current={link.active ? "page" : undefined}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(navLinkClasses(link.active), "w-full py-2.5")}
-                >
-                  {link.label}
-                </Link>
-              )
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className={cn(link.href === '/' ? ACTIVE_NAV_LINK_CLASS : NAV_LINK_CLASS, "w-full py-2.5")}
+              >
+                {link.label}
+              </Link>
             )}
 
             {/* Actions hidden from the top bar on small screens. */}

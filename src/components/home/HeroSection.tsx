@@ -1,26 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Headphones, Play, Search, ShieldCheck, Tag, Zap } from "lucide-react";
+import { ArrowRight, Play, Search, } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "cn";
 
-const FEATURES = [
-    { icon: ShieldCheck, title: "Trusted & Secure", description: "Your safety is our priority" },
-    { icon: Zap, title: "Fast & Easy Booking", description: "Rent in just a few clicks" },
-    { icon: Headphones, title: "24/7 Support", description: "Always here to help" },
-    { icon: Tag, title: "Affordable Pricing", description: "Get the best value" },
-] as const;
 
-/* Divider borders per breakpoint:
-   1 column (mobile) → top border on every item but the first
-   2 columns (sm)    → top border on row 2, left border on column 2
-   4 columns (lg)    → left border on every item but the first */
-const FEATURE_DIVIDERS = [
-    "",
-    "border-t border-border sm:border-t-0 sm:border-l",
-    "border-t border-border lg:border-t-0 lg:border-l",
-    "border-t border-border sm:border-l lg:border-t-0",
-];
 
 /** Decorative orange ribbon sweeping across the left edge of the photo. */
 function HeroRibbon({ id, className }: { id: string; className?: string }) {
@@ -57,7 +41,7 @@ export default function HeroSection() {
             />
 
             {/* Full-bleed photo on large screens. */}
-            <div className="absolute inset-y-0 right-0 hidden w-[54%] lg:block">
+            <div className="absolute inset-y-0 right-0 hidden w-[52%] lg:block">
                 <Image
                     src="/hero-equipment.jpg"
                     alt="Yellow excavator working on a construction site"
@@ -75,7 +59,7 @@ export default function HeroSection() {
             </div>
 
             <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="grid gap-10 pt-12 pb-10 lg:grid-cols-[1.05fr_0.95fr] lg:pt-16 lg:pb-16">
+                <div className="grid gap-10 pt-12 pb-20 lg:grid-cols-[1.05fr_0.95fr] lg:pt-16 lg:pb-24">
                     <div className="lg:pr-6">
                         <p className="flex items-center gap-3 text-sm font-bold tracking-[0.15em] text-brand uppercase">
                             <span aria-hidden="true" className="h-px w-9 bg-brand" />
@@ -104,7 +88,7 @@ export default function HeroSection() {
                             </span>
                         </h1>
 
-                        <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                        <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/80 sm:text-lg">
                             Find and rent high-quality equipment for your projects, events, and
                             more — quickly and easily.
                         </p>
@@ -112,9 +96,6 @@ export default function HeroSection() {
                         <div className="mt-9 flex flex-wrap items-center gap-4">
                             <Link
                                 href="/equipment"
-                                // cn() must wrap buttonVariants(): cva only concatenates, so
-                                // without it `bg-primary` from the default variant would
-                                // override `bg-brand` by CSS order.
                                 className={cn(
                                     buttonVariants({
                                         className:
@@ -123,9 +104,9 @@ export default function HeroSection() {
                                     "bg-brand text-white hover:bg-brand/90 dark:text-white"
                                 )}
                             >
-                                <Search className="size-[18px]" />
+                                <Search className="size-4.5" />
                                 Browse All Equipment
-                                <ArrowRight className="size-[18px]" />
+                                <ArrowRight className="size-4.5" />
                             </Link>
                             <Link
                                 href="/how-it-works"
@@ -157,41 +138,13 @@ export default function HeroSection() {
                             height={1067}
                             priority
                             sizes="(max-width: 1024px) 100vw"
-                            className="aspect-[4/3] w-full object-cover"
+                            className="aspect-4/3 w-full object-cover"
                         />
                         <div
                             aria-hidden="true"
                             className="absolute inset-y-0 left-0 w-20 bg-linear-to-r from-background/60 to-transparent"
                         />
                         <HeroRibbon id="hero-ribbon-mobile" className="-left-6 w-24" />
-                    </div>
-                </div>
-
-                {/* Trust card overlapping the bottom of the hero. */}
-                <div className="relative z-10 mx-auto -mt-2 max-w-6xl rounded-3xl border border-border/70 bg-card p-2 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.25)] sm:p-3 lg:-mt-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-                        {FEATURES.map((feature, index) => {
-                            const Icon = feature.icon;
-                            return (
-                                <div
-                                    key={feature.title}
-                                    className={cn(
-                                        "flex items-start gap-4 border-border p-5 sm:p-6",
-                                        FEATURE_DIVIDERS[index]
-                                    )}
-                                >
-                                    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand text-white shadow-md shadow-brand/30">
-                                        <Icon className="size-5" strokeWidth={2.5} />
-                                    </span>
-                                    <div className="min-w-0">
-                                        <p className="text-base font-bold text-foreground">{feature.title}</p>
-                                        <p className="mt-1 text-sm text-muted-foreground">
-                                            {feature.description}
-                                        </p>
-                                    </div>
-                                </div>
-                            );
-                        })}
                     </div>
                 </div>
             </div>

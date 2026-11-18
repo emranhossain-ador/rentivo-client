@@ -7,64 +7,54 @@ const categories = [
     {
         id: 1,
         title: "Gardening Equipment",
-        emoji: "🌿",
-        description: "Keep your outdoor space perfectly maintained.",
-        image: "/images/categories/gardening.jpg",
+        image: "https://images.unsplash.com/photo-1555955207-b96159c16808?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
         href: "/browse-equipment?category=gardening",
     },
     {
         id: 2,
         title: "Cleaning Equipment",
-        emoji: "🧹",
-        description: "Clean smarter, work better.",
-        image: "/images/categories/cleaning.jpg",
+        image: "https://images.unsplash.com/photo-1781637590564-01c65dbf2039?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
         href: "/browse-equipment?category=cleaning",
     },
     {
         id: 3,
         title: "Construction Equipment",
-        emoji: "🦺",
-        description: "Build more, with less effort.",
-        image: "/images/categories/construction.jpg",
+        image: "https://images.unsplash.com/photo-1779285756094-85ddc78ead65?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
         href: "/browse-equipment?category=construction",
         popular: true,
     },
     {
         id: 4,
         title: "Generators",
-        emoji: "⚡",
-        description: "Reliable power for anywhere, anytime.",
-        image: "/images/categories/generator.jpg",
+        image: "https://plus.unsplash.com/premium_photo-1663011223783-e3686f74b948?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
         href: "/browse-equipment?category=generators",
     },
     {
         id: 5,
         title: "Event Equipment",
-        emoji: "📅",
-        description: "Make your event unforgettable.",
-        image: "/images/categories/event.jpg",
+        image: "https://images.unsplash.com/photo-1510511233900-1982d92bd835?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
         href: "/browse-equipment?category=event",
     },
 ];
 
 export default function PopularCategories() {
     return (
-        <section className="relative isolate overflow-hidden bg-background py-16 sm:py-20 lg:py-24">
+        <section className="relative isolate overflow-hidden bg-background py-16 sm:py-20 lg:py-24 pt-36!">
 
             {/* Decorative Background */}
-            <div className="pointer-events-none absolute -left-40 -top-44 -z-10 size-[380px] rounded-full border-[65px] border-brand/5" />
+            <div className="pointer-events-none absolute -left-40 -top-44 -z-10 size-95 rounded-full border-65 border-brand/5" />
 
-            <div className="pointer-events-none absolute -right-40 -top-20 -z-10 size-[420px] rounded-full border-[75px] border-brand/5" />
+            <div className="pointer-events-none absolute -right-40 -top-20 -z-10 size-105 rounded-full border-75 border-brand/5" />
 
-            <div className="pointer-events-none absolute -bottom-64 -right-20 -z-10 size-[450px] rounded-full bg-brand/5 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-64 -right-20 -z-10 size-112.5 rounded-full bg-brand/5 blur-3xl" />
 
             {/* Main Container */}
-            <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-10">
+            <div className="section-container ">
 
                 {/* Section Header */}
                 <div className="mb-12 text-center sm:mb-16">
 
-                    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand px-4 py-2 text-sm font-bold text-brand sm:text-base">
+                    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand bg-brand/5 px-4 py-2 text-sm font-bold text-brand sm:text-base">
                         <Grid2X2 size={19} />
                         Browse by Category
                     </div>
@@ -73,7 +63,7 @@ export default function PopularCategories() {
 
                         <span className="hidden h-0.5 w-16 bg-brand sm:block lg:w-28" />
 
-                        <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
+                        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
                             Popular{" "}
                             <span className="text-brand">Categories</span>
                         </h2>
@@ -82,7 +72,7 @@ export default function PopularCategories() {
 
                     </div>
 
-                    <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
+                    <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                         Explore our most requested categories from our rental inventory
                     </p>
                 </div>
@@ -91,26 +81,16 @@ export default function PopularCategories() {
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 
                     {categories.map((category) => (
-                        <div
+                        <Link
+                            href={category.href}
                             key={category.id}
-                            className={`group relative flex flex-col rounded-[30px] border p-4 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl sm:p-5 ${category.popular
-                                ? "border-2 border-brand bg-brand/[0.03] shadow-lg shadow-brand/10"
-                                : "border-border bg-card hover:border-brand/50"
-                                }`}
+                            className={`group relative flex flex-col rounded-[30px] border p-3 transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl sm:p-4 border-border bg-card hover:border-brand`}
                         >
 
-                            {/* Popular Badge */}
-                            {category.popular && (
-                                <div className="absolute -right-1 -top-3 z-20 flex items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-sm font-bold text-brand-foreground shadow-lg">
-                                    <Star size={17} fill="currentColor" />
-                                    Most Popular
-                                </div>
-                            )}
 
                             {/* Image */}
-                            <Link
-                                href={category.href}
-                                className="relative mb-6 block h-52 w-full overflow-hidden rounded-[24px] sm:h-44 lg:h-44"
+                            <div
+                                className="relative mb-4 block h-52 w-full shrink-0 overflow-hidden rounded-[18px] sm:h-44 lg:h-44"
                             >
                                 <Image
                                     src={category.image}
@@ -119,37 +99,15 @@ export default function PopularCategories() {
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
                                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
-                            </Link>
+                            </div>
 
                             {/* Content */}
-                            <div className="flex flex-1 flex-col items-center text-center">
-
-                                <h3 className="mb-3 flex items-center justify-center gap-2 text-lg font-bold tracking-tight text-card-foreground">
-                                    <span className="text-xl">{category.emoji}</span>
+                            <div className="flex-1 text-center">
+                                <h3 className="text-base font-bold tracking-tight text-card-foreground line-clamp-1 group-hover:text-brand">
                                     {category.title}
                                 </h3>
-
-                                <p className="mb-6 max-w-[230px] text-sm leading-relaxed text-muted-foreground sm:text-base">
-                                    {category.description}
-                                </p>
-
-                                {/* Button */}
-                                <Link
-                                    href={category.href}
-                                    className={`mt-auto inline-flex min-w-[150px] items-center justify-center gap-3 rounded-full border border-brand px-5 py-3 text-sm font-bold transition-all duration-300 ${category.popular
-                                        ? "bg-brand text-brand-foreground shadow-lg shadow-brand/20 hover:opacity-90"
-                                        : "text-foreground hover:bg-brand hover:text-brand-foreground"
-                                        }`}
-                                >
-                                    View All
-                                    <ArrowRight
-                                        size={18}
-                                        className="transition-transform duration-300 group-hover:translate-x-1"
-                                    />
-                                </Link>
-
                             </div>
-                        </div>
+                        </Link>
                     ))}
 
                 </div>
