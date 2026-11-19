@@ -1,5 +1,7 @@
+"use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { IoLogoYoutube } from "react-icons/io";
 
@@ -24,6 +26,13 @@ const socials = [
 ];
 
 export default function Footer() {
+
+    const pathname = usePathname();
+
+    if (pathname === "/sign-in" || pathname === "/sign-up") {
+        return null;
+    }
+
     return (
         <footer className="relative overflow-hidden bg-accent text-foreground border-t border-border mt-10 md:mt-15">
             {/* Decorative glow */}

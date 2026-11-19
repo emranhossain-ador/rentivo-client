@@ -59,24 +59,25 @@ export default function HowItWorks() {
                     {/* Section Heading */}
                     <div className="mb-8 text-center">
 
-                        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/5 px-4 py-2 text-sm font-bold text-brand">
+                        {/* Top Rated Badge */}
+                        <div className="mb-3 md:mb-4 inline-flex items-center gap-1.5 rounded-full border border-brand bg-brand/5 px-3 py-2 text-[13px] font-bold text-brand sm:text-sm">
                             Get Started Easily
                             <Rocket size={16} />
                         </div>
 
-                        <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+                        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
                             How It{" "}
                             <span className="text-brand">Works</span>
                         </h2>
 
-                        <p className="mt-3 text-base text-muted-foreground sm:text-lg">
+                        <p className="mt-1 md:mt-3 text-sm text-foreground/80 sm:text-base">
                             Renting equipment is just a few simple steps
                         </p>
 
                     </div>
 
                     {/* Steps Grid */}
-                    <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-2 md:gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
                         {steps.map((step, index) => {
                             const Icon = step.icon;

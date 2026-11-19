@@ -108,6 +108,8 @@ const TopNavbar = () => {
     }
   };
 
+
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
@@ -144,23 +146,27 @@ const TopNavbar = () => {
         </nav>
 
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
+
           <ThemeToggle
             theme={theme}
             onChange={handleThemeChange}
             className="hidden sm:flex"
           />
+
           <span className="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
-          <Button
-            variant="outline"
-            className="hidden h-10 gap-2 rounded-full px-4 font-semibold sm:inline-flex"
+
+          <Link href={'/sign-in'}
+            className="hidden h-10 rounded-full px-4 font-semibold sm:inline-flex items-center gap-1.5 text-sm border border-border transition-colors hover:border-brand/60 hover:text-brand"
           >
             <User className="size-4" />
             Login
-          </Button>
-          <Button className="h-10 gap-2 rounded-full bg-brand px-4 font-semibold text-white hover:bg-brand/90 dark:text-white">
+          </Link>
+
+          <Link href={'/sign-up'} className="hidden h-10 sm:flex items-center text-sm gap-2 rounded-full bg-brand px-4 font-semibold text-white hover:bg-brand/90 dark:text-white">
             <UserPlus className="size-4" />
             Register
-          </Button>
+          </Link>
+
           <button
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}

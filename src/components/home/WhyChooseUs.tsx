@@ -55,36 +55,25 @@ const WhyChooseUs = () => {
                 <div className="lg:col-span-4">
 
                     {/* Badge */}
-                    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/5 px-3 py-2 text-sm font-bold text-brand">
-                        <span className="flex size-6 items-center justify-center rounded-full bg-brand text-brand-foreground">
+                    <div className="mb-3 md:mb-4 inline-flex items-center gap-1.5 rounded-full border border-brand bg-brand/5 px-3 py-2 text-[13px] font-bold text-brand sm:text-sm">
+                        <span className="flex size-5 items-center justify-center rounded-full bg-brand text-brand-foreground">
                             <Star size={14} fill="currentColor" />
                         </span>
 
                         Our Advantages
-
-                        <Star size={15} fill="currentColor" />
                     </div>
 
                     {/* Heading */}
-                    <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-[54px] lg:leading-[1.15]">
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
                         Why Choose{" "}
                         <span className="text-brand">Us?</span>
                     </h2>
 
                     {/* Description */}
-                    <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+                    <p className="mt-1 md:mt-3 text-sm text-foreground/80 sm:text-base">
                         We provide reliable, affordable and hassle-free rental services
                         for everyone.
                     </p>
-
-                    {/* Learn More */}
-                    <Link
-                        href="/about"
-                        className="mt-7 inline-flex items-center gap-3 rounded-full bg-brand px-7 py-3.5 font-bold text-brand-foreground shadow-lg shadow-brand/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                    >
-                        Learn More
-                        <ArrowRight size={20} />
-                    </Link>
 
                 </div>
 

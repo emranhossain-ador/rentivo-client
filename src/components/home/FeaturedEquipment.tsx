@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import EquipmentCard from "../EquipmentCard";
+import ViewAll from "../ViewAll";
 
 const equipment = [
     {
@@ -102,8 +103,8 @@ export default function FeaturedEquipment() {
 
                     <div>
                         {/* Top Rated Badge */}
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/5 px-4 py-2 text-sm font-bold text-brand">
-                            <span className="flex size-6 items-center justify-center rounded-full bg-brand text-brand-foreground">
+                        <div className="mb-3 md:mb-4 inline-flex items-center gap-1.5 rounded-full border border-brand bg-brand/5 px-3 py-2 text-[13px] font-bold text-brand sm:text-sm">
+                            <span className="flex size-5 items-center justify-center rounded-full bg-brand text-brand-foreground">
                                 <Star size={14} fill="currentColor" />
                             </span>
                             Top Rated Equipment
@@ -111,7 +112,7 @@ export default function FeaturedEquipment() {
 
                         {/* Heading */}
                         <div className="flex flex-wrap items-center gap-4">
-                            <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
                                 Featured{" "}
                                 <span className="text-brand">Equipment</span>
                             </h2>
@@ -119,19 +120,13 @@ export default function FeaturedEquipment() {
                             <span className="hidden h-0.5 w-32 bg-linear-to-r from-brand to-transparent xl:block" />
                         </div>
 
-                        <p className="mt-3 text-base text-muted-foreground sm:text-lg">
+                        <p className="mt-1 md:mt-3 text-sm text-foreground/80 sm:text-base">
                             Top-rated and most rented equipment
                         </p>
                     </div>
 
                     {/* View All */}
-                    <Link
-                        href="/browse-equipment"
-                        className="inline-flex w-fit items-center justify-center gap-4 text-sm rounded-full bg-brand px-8 py-3 font-semibold text-brand-foreground shadow-lg shadow-brand/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                    >
-                        View All
-                        <ArrowRight size={20} />
-                    </Link>
+                    <ViewAll url="/equipment" />
 
                 </div>
 

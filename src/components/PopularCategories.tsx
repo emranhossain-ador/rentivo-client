@@ -52,10 +52,10 @@ export default function PopularCategories() {
             <div className="section-container ">
 
                 {/* Section Header */}
-                <div className="mb-12 text-center sm:mb-16">
+                <div className="mb-12 text-center sm:mb-14">
 
-                    <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand bg-brand/5 px-4 py-2 text-sm font-bold text-brand sm:text-base">
-                        <Grid2X2 size={19} />
+                    <div className="mb-3 md:mb-4 inline-flex items-center gap-1.5 rounded-full border border-brand bg-brand/5 px-3 py-2 text-[13px] font-bold text-brand sm:text-sm">
+                        <Grid2X2 size={18} />
                         Browse by Category
                     </div>
 
@@ -63,7 +63,7 @@ export default function PopularCategories() {
 
                         <span className="hidden h-0.5 w-16 bg-brand sm:block lg:w-28" />
 
-                        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
+                        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
                             Popular{" "}
                             <span className="text-brand">Categories</span>
                         </h2>
@@ -72,25 +72,25 @@ export default function PopularCategories() {
 
                     </div>
 
-                    <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                    <p className="mx-auto mt-1 md:mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                         Explore our most requested categories from our rental inventory
                     </p>
                 </div>
 
                 {/* Categories Grid */}
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                <div className="grid grid-cols-2 gap-2 md:gap-4 lg:gap-6 sm:grid-cols-3 xl:grid-cols-5">
 
                     {categories.map((category) => (
                         <Link
                             href={category.href}
                             key={category.id}
-                            className={`group relative flex flex-col rounded-[30px] border p-3 transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl sm:p-4 border-border bg-card hover:border-brand`}
+                            className={`group relative flex flex-col rounded-[25px] md:rounded-[30px] border p-2 transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-xl sm:p-4 border-border bg-card hover:border-brand`}
                         >
 
 
                             {/* Image */}
                             <div
-                                className="relative mb-4 block h-52 w-full shrink-0 overflow-hidden rounded-[18px] sm:h-44 lg:h-44"
+                                className="relative mb-2 md:mb-4 block h-32 w-full shrink-0 overflow-hidden rounded-[18px] sm:h-44 lg:h-44"
                             >
                                 <Image
                                     src={category.image}

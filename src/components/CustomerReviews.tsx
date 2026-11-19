@@ -50,9 +50,10 @@ export default function CustomerReviews() {
         <section className="bg-background section-container w-full space-y-5 my-10">
             {/* Section Header */}
 
-            <div className="mb-12 text-center sm:mb-16">
+            <div className="mb-10 text-center sm:mb-16">
 
-                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand bg-brand/5 px-4 py-2 text-sm font-bold text-brand sm:text-base">
+                {/* Top Rated Badge */}
+                <div className="mb-3 md:mb-4 inline-flex items-center gap-1.5 rounded-full border border-brand bg-brand/5 px-3 py-2 text-[13px] font-bold text-brand sm:text-sm">
                     Customer Reviews
                 </div>
 
@@ -60,7 +61,7 @@ export default function CustomerReviews() {
 
                     <span className="hidden h-0.5 w-16 bg-brand sm:block lg:w-28" />
 
-                    <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-6xl">
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
                         What Our{" "}
                         <span className="text-brand">Customers Say</span>
                     </h2>
@@ -69,7 +70,7 @@ export default function CustomerReviews() {
 
                 </div>
 
-                <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                <p className="mt-1 md:mt-3 text-sm text-foreground/80 sm:text-base">
                     What customers say about their experience
                 </p>
             </div>
