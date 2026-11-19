@@ -5,79 +5,54 @@ import { ArrowRight, MapPin, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import AvailabilityBadge from "./ui/AvailabilityBadge";
-import FavoriteButton from "./ui/FavoriteButton";
 
 export default function EquipmentCard() {
     return (
-        <article className="group w-full overflow-hidden rounded-[24px] border border-border bg-card shadow-[0_8px_30px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.14)]">
-
-            {/* Image section */}
-            <div className="relative h-50 overflow-hidden">
+        <article
+            className="group overflow-hidden rounded-xl border border-border shadow-lg shadow-black/5 dark:shadow-white/5 bg-card p-2 transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/5 sm:p-2.5"
+        >
+            {/* Image */}
+            <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
                 <Image
-                    src="https://images.unsplash.com/photo-1623869675781-80aa31012a5a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
-                    alt="Toyota Corolla"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105 rounded-t-[24px]"
+                    src={'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=700&q=80'}
+                    alt={'Bulldozer'}
+                    width={100}
+                    height={100}
+                    className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-
-                {/* Image overlay */}
-                <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-black/10" />
-
-                {/* Favorite button */}
-                <FavoriteButton />
-
-                {/* Availability */}
                 <AvailabilityBadge />
             </div>
 
-            {/* Content */}
-            <div className="p-3 md:p-4">
-                {/* Title + rating */}
-                <div className="flex items-start justify-between gap-3">
-                    <Link href={'/'} className="text-lg line-clamp-1 font-bold tracking-tight text-foreground hover:text-brand">
-                        Toyota Corolla
-                    </Link>
-
-                    <div>
-                        <p className="text-xl font-extrabold tracking-tight text-orange-600">
-                            ৳70
-                            <span className="ml-1 text-sm font-semibold text-foreground/70">
-                                / daily
-                            </span>
-                        </p>
-                    </div>
-
+            {/* Details */}
+            <div className="px-0.5 pt-2">
+                <div className="flex items-center gap-1.5">
+                    <h3 className="truncate line-clamp-1 text-sm font-bold text-foreground sm:text-base transition-colors group-hover:text-brand">
+                        {'Bulldozer'}
+                    </h3>
+                    {/* Animated Dot */}
+                    <span className="relative flex h-2 w-2">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                    </span>
                 </div>
 
-                {/* Category */}
-                <div className="mt-3 inline-flex items-center gap-2 rounded-lg border border-brand/20 bg-brand/10 px-3 py-1.5 text-xs font-semibold text-foreground">
-                    Vehicles & Transportation
+                <div className="mt-1 flex items-center gap-1">
+                    <Star size={12} className="fill-amber-400 text-amber-400" />
+                    <span className="text-[12px] font-semibold">{4.6}</span>
+                    <span className="truncate text-[11px] text-foreground/80">
+                        ({12} Reviews)
+                    </span>
                 </div>
 
-                {/* Location */}
-                <div className="flex items-center gap-1 mt-3">
-                    <div className="flex shrink-0 items-center gap-1.5 text-xs font-semibold text-foreground/80">
-                        <Star size={15} className="fill-amber-500 text-amber-500" />
-                        4.7
-                        <span className="font-normal text-foreground/80">(128)</span>
-                    </div>
-                    <span className="text-foreground/40">|</span>
-                    <div className="flex items-center gap-2 text-sm text-foreground/90">
-                        <MapPin size={16} className="text-brand" />
-                        Sylhet, Bangladesh
-                    </div>
-                </div>
+                <p className="mt-1 text-xs font-bold text-orange-500 sm:text-sm">
+                    ৳{50}
+                    <span className="font-normal text-muted-foreground"> / day</span>
+                </p>
 
-                {/* Divider */}
-                <div className="my-4 border-t border-border" />
-
-                {/* Price + Button */}
-                <div >
-                    <Link href={`/`} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 min-h-10 w-full text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-orange-600 hover:shadow-md active:scale-95 cursor-pointer group">
-                        View Details
-                        <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-                    </Link>
-                </div>
+                <Link href={'/equipment/347850934'} className="mt-2.5 flex w-full items-center border border-brand/80 justify-center gap-1 rounded-lg bg-brand/10 py-2 md:py-2.5 text-[10px] font-semibold text-brand transition-colors hover:bg-brand hover:text-white sm:text-xs cursor-pointer">
+                    View Details
+                    <ArrowRight size={12} />
+                </Link>
             </div>
         </article>
     );

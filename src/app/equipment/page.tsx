@@ -67,9 +67,7 @@ const AllEquipmentPage = () => {
                     <EquipmentFilter />
 
                     <div className="min-w-0">
-                        {/* Search & Sort */}
-
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid grid-cols-2 gap-2 md:gap-3 lg:gap-4 lg:grid-cols-3">
                             <EquipmentCard />
                             <EquipmentCard />
                             <EquipmentCard />

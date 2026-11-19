@@ -5,6 +5,7 @@ import { useState, useSyncExternalStore } from "react";
 import { Menu, Moon, Sun, User, UserPlus, Wrench, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "cn";
+import { usePathname } from "next/navigation";
 
 type Theme = "light" | "dark";
 
@@ -83,7 +84,12 @@ const getThemeSnapshot = (): Theme =>
 
 const getServerThemeSnapshot = (): Theme => "light";
 
-export default function TopNavbar() {
+
+
+const TopNavbar = () => {
+
+  const pathname = usePathname();
+
   const theme = useSyncExternalStore(
     subscribeToTheme,
     getThemeSnapshot,
@@ -124,10 +130,11 @@ export default function TopNavbar() {
         >
           {
             NAV_LINKS.map((link) => (
+
               <Link
                 key={link.label}
                 href={link.href}
-                className={link.href === '/' ? ACTIVE_NAV_LINK_CLASS : NAV_LINK_CLASS}
+                className={link.href === pathname ? ACTIVE_NAV_LINK_CLASS : NAV_LINK_CLASS}
               >
                 {link.label}
               </Link>
@@ -210,3 +217,5 @@ export default function TopNavbar() {
     </header>
   );
 }
+
+export default TopNavbar;

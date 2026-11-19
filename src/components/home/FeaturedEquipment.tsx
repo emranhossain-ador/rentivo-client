@@ -1,22 +1,15 @@
 
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import {
     ArrowRight,
-    CalendarDays,
     CarFront,
     Camera,
-    CheckCircle2,
-    Heart,
-    MapPin,
     Star,
     Tractor,
-    BadgeCheck,
 } from "lucide-react";
 
-import { useState } from "react";
 import EquipmentCard from "../EquipmentCard";
 
 const equipment = [
@@ -48,6 +41,32 @@ const equipment = [
     },
     {
         id: 3,
+        name: "Excavator Machine",
+        category: "Construction Equipment",
+        categoryIcon: Tractor,
+        image: "/images/equipment/excavator.jpg",
+        rating: 4.8,
+        reviews: 72,
+        location: "Dhaka, Bangladesh",
+        price: 150,
+        available: true,
+        href: "/equipment/excavator",
+    },
+    {
+        id: 4,
+        name: "Excavator Machine",
+        category: "Construction Equipment",
+        categoryIcon: Tractor,
+        image: "/images/equipment/excavator.jpg",
+        rating: 4.8,
+        reviews: 72,
+        location: "Dhaka, Bangladesh",
+        price: 150,
+        available: true,
+        href: "/equipment/excavator",
+    },
+    {
+        id: 5,
         name: "Excavator Machine",
         category: "Construction Equipment",
         categoryIcon: Tractor,
@@ -117,7 +136,7 @@ export default function FeaturedEquipment() {
                 </div>
 
                 {/* Equipment Grid */}
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-2 gap-2.5 md:gap-6 md:grid-cols-3 xl:grid-cols-4">
 
                     {equipment.map((item) => {
 
