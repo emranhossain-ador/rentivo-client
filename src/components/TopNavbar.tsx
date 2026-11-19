@@ -108,6 +108,7 @@ const TopNavbar = () => {
     }
   };
 
+  if (pathname.startsWith('/dashboard')) return null;
 
 
   return (

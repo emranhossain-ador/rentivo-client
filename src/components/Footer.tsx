@@ -29,7 +29,7 @@ export default function Footer() {
 
     const pathname = usePathname();
 
-    if (pathname === "/sign-in" || pathname === "/sign-up") {
+    if (pathname === "/sign-in" || pathname === "/sign-up" || pathname.startsWith('/dashboard')) {
         return null;
     }
 

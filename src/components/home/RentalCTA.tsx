@@ -33,10 +33,10 @@ export default function RentalCTA() {
                         </p>
 
                         <Link
-                            href="/register"
+                            href="/sign-up"
                             className="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-xs font-bold text-brand shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-indigo-50 hover:shadow-lg active:scale-95"
                         >
-                            Register Now
+                            Signup Now
                             <ArrowRight size={15} />
                         </Link>
                     </div>
