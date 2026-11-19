@@ -1,7 +1,6 @@
 
 import {
     Search,
-    CalendarDays,
     ArrowUpDown,
     Package,
 } from "lucide-react";
