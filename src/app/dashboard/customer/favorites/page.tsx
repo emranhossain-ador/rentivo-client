@@ -5,6 +5,7 @@ import {
     Heart,
 } from "lucide-react";
 import EquimentTable from "./SavedEquimentTable";
+import PageHeading from "@/components/dashboard/PageHeading";
 
 
 const FavoritesPage = () => {
@@ -12,21 +13,11 @@ const FavoritesPage = () => {
     return (
         <main className="bg-background space-y-8 md:space-y-10">
             {/* Page heading */}
-            <div>
-                <div className="flex items-center gap-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                        <Heart className="h-5 w-5" />
-                    </div>
-
-                    <h1 className="font-heading-grotesk text-2xl font-bold tracking-tight sm:text-3xl">
-                        Favorites
-                    </h1>
-                </div>
-
-                <p className="mt-2 text-sm text-muted-foreground">
-                    View, manage and book your favorites equipment.
-                </p>
-            </div>
+            <PageHeading
+                Icon={Heart}
+                title="Favorites"
+                subTitle="View, manage and book your favorites equipment."
+            />
 
             {/* Main table card */}
             <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">

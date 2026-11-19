@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import SummaryCards from "./_components/SummaryCards";
 import MyRentalTable from "./_components/MyRentalTable";
+import PageHeading from "@/components/dashboard/PageHeading";
 
 
 export default function MyRentals() {
@@ -13,21 +14,11 @@ export default function MyRentals() {
     return (
         <main className="min-h-screen bg-background space-y-8 md:space-y-10">
             {/* Page heading */}
-            <div>
-                <div className="flex items-center gap-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                        <Package className="h-5 w-5" />
-                    </div>
-
-                    <h1 className="font-heading-grotesk text-2xl font-bold tracking-tight sm:text-3xl">
-                        My Rentals
-                    </h1>
-                </div>
-
-                <p className="mt-2 text-sm text-muted-foreground">
-                    Manage and track all your equipment rental bookings.
-                </p>
-            </div>
+            <PageHeading
+                Icon={Package}
+                title="My Rentals"
+                subTitle="Manage and track all your equipment rental bookings."
+            />
 
             {/* Summary cards */}
             <SummaryCards />
