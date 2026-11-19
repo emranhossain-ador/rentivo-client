@@ -13,7 +13,7 @@ export const customerNavItems = [
     },
     {
         name: "My Rentals",
-        href: "/my-rentals",
+        href: "/dashboard/customer/my-rentals",
         icon: ShoppingBag,
     },
     {
