@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { customerNavItems } from "../customer/customerNavItems";
 import { adminNavItems } from "../admin/adminNavItems";
+import { ownerNavItems } from "../owner/ownerNavItems";
 
 interface SidebarProps {
     mobileOpen?: boolean;
@@ -28,15 +29,17 @@ export default function DashboardSidebar({
 }: SidebarProps) {
     const pathname = usePathname();
 
-    const role = 'admin';
+    const role = 'owner';
 
 
     const navItems: NavItem[] = [];
 
-    if (role === 'admin') {
-        navItems.push(...adminNavItems);
-    } else {
+    if (role === 'owner') {
+        navItems.push(...ownerNavItems);
+    } else if (role === 'customer') {
         navItems.push(...customerNavItems);
+    } else if (role === 'admin') {
+        navItems.push(...adminNavItems);
     }
 
 
