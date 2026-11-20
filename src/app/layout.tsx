@@ -3,6 +3,7 @@ import { Open_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import MainLayout from "@/components/MainLayout";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ToastContainer } from "react-toastify";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               "(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})();",
           }}
         />
+        <ToastContainer />
 
         <TooltipProvider>
           <MainLayout>{children}</MainLayout>

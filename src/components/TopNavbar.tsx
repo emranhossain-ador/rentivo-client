@@ -6,6 +6,10 @@ import { Menu, Moon, Sun, User, UserPlus, Wrench, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "cn";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { useSession } from "@/lib/auth-client";
+import UserDropdownBtn from "./UserDropdownBtn";
+import { UserType } from "@/lib/type/userType";
 
 type Theme = "light" | "dark";
 
@@ -89,6 +93,8 @@ const getServerThemeSnapshot = (): Theme => "light";
 const TopNavbar = () => {
 
   const pathname = usePathname();
+  const session = useSession();
+  const user = session.data?.user as UserType;
 
   const theme = useSyncExternalStore(
     subscribeToTheme,
@@ -119,17 +125,12 @@ const TopNavbar = () => {
           aria-label="RentalHub home"
           className="flex shrink-0 items-center gap-2.5 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
-          <span className="flex size-9 items-center justify-center rounded-xl bg-[#3b2417] text-white">
-            <Wrench className="size-5" strokeWidth={2.5} />
-          </span>
-          <span className="text-xl font-extrabold tracking-tight">
-            <span className="text-foreground">Rentivo</span>
-          </span>
+          <Image src={'/image/logo.png'} width={32} height={32} alt='Rentivo logo' className="h-9 w-fit object-cover" />
         </Link>
 
         <nav
           aria-label="Main navigation"
-          className="ml-4 hidden items-center gap-1 lg:flex"
+          className="ml-10 hidden items-center gap-1 lg:flex"
         >
           {
             NAV_LINKS.map((link) => (
@@ -156,17 +157,26 @@ const TopNavbar = () => {
 
           <span className="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
 
-          <Link href={'/sign-in'}
-            className="hidden h-10 rounded-full px-4 font-semibold sm:inline-flex items-center gap-1.5 text-sm border border-border transition-colors hover:border-brand/60 hover:text-brand"
-          >
-            <User className="size-4" />
-            Login
-          </Link>
+          {
+            user ?
+              <UserDropdownBtn user={user} />
+              :
+              <>
+                <Link href={'/sign-in'}
+                  className="hidden h-10 rounded-full px-4 font-semibold sm:inline-flex items-center gap-1.5 text-sm border border-border transition-colors hover:border-brand/60 hover:text-brand cursor-pointer"
+                >
+                  <User className="size-4" />
+                  Login
+                </Link>
 
-          <Link href={'/sign-up'} className="hidden h-10 sm:flex items-center text-sm gap-2 rounded-full bg-brand px-4 font-semibold text-white hover:bg-brand/90 dark:text-white">
-            <UserPlus className="size-4" />
-            Register
-          </Link>
+                <Link href={'/sign-up'} className="hidden h-10 sm:flex items-center text-sm gap-2 rounded-full bg-brand px-4 font-semibold text-white hover:bg-brand/90 dark:text-white cursor-pointer">
+                  <UserPlus className="size-4" />
+                  Register
+                </Link>
+              </>
+          }
+
+
 
           <button
             type="button"
@@ -191,7 +201,7 @@ const TopNavbar = () => {
                 key={link.label}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className={cn(link.href === '/' ? ACTIVE_NAV_LINK_CLASS : NAV_LINK_CLASS, "w-full py-2.5")}
+                className={cn(link.href === pathname ? ACTIVE_NAV_LINK_CLASS : NAV_LINK_CLASS, "w-full py-2.5")}
               >
                 {link.label}
               </Link>
@@ -205,17 +215,16 @@ const TopNavbar = () => {
                 className="flex w-fit"
               />
               <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="h-10 flex-1 gap-2 rounded-full font-semibold"
+                <Link href={'/sign-in'}
+                  className="h-12 flex-1 gap-2 rounded-full font-semibold flex items-center justify-center border border-border text-foreground hover:border-brand/60 hover:text-brand"
                 >
                   <User className="size-4" />
                   Login
-                </Button>
-                <Button className="h-10 flex-1 gap-2 rounded-full bg-brand font-semibold text-white hover:bg-brand/90 dark:text-white">
+                </Link>
+                <Link href={'/sign-up'} className="h-12 flex-1 gap-2 rounded-full flex items-center justify-center bg-brand font-semibold text-white hover:bg-brand/90 ">
                   <UserPlus className="size-4" />
                   Register
-                </Button>
+                </Link>
               </div>
             </div>
           </nav>

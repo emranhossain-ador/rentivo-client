@@ -11,6 +11,8 @@ import {
 import { customerNavItems } from "../customer/customerNavItems";
 import { adminNavItems } from "../admin/adminNavItems";
 import { ownerNavItems } from "../owner/ownerNavItems";
+import { useSession } from "@/lib/auth-client";
+import { UserRole } from "@/lib/type/userType";
 
 interface SidebarProps {
     mobileOpen?: boolean;
@@ -28,17 +30,18 @@ export default function DashboardSidebar({
     onCloseMobile,
 }: SidebarProps) {
     const pathname = usePathname();
+    const session = useSession();
+    const userRole = session?.data?.user?.role as UserRole;
 
-    const role = 'owner';
 
 
     const navItems: NavItem[] = [];
 
-    if (role === 'owner') {
+    if (userRole === 'owner') {
         navItems.push(...ownerNavItems);
-    } else if (role === 'customer') {
+    } else if (userRole === 'customer') {
         navItems.push(...customerNavItems);
-    } else if (role === 'admin') {
+    } else if (userRole === 'admin') {
         navItems.push(...adminNavItems);
     }
 

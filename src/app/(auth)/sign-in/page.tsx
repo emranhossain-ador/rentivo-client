@@ -1,21 +1,10 @@
 
-"use client";
-
-import { useState } from "react";
-import {
-    Eye,
-    EyeOff,
-    LockKeyhole,
-    Mail,
-    LogIn,
-} from "lucide-react";
 import Link from "next/link";
+import SigninForm from "@/components/auth/SigninForm";
 
 
 
 export default function AuthPage() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
 
 
     return (
@@ -37,79 +26,7 @@ export default function AuthPage() {
 
 
                 {/* Form */}
-                <form
-                    className="mt-7 space-y-4 "
-                >
-
-                    {/* Email */}
-                    <div>
-                        <label className="mb-2 block text-sm font-semibold text-foreground">
-                            Email Address
-                        </label>
-
-                        <div className="relative">
-                            <Mail className="absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-brand" />
-                            <input type="email" placeholder="Enter your email address" autoComplete="email" className="icon-input" />
-                        </div>
-                    </div>
-
-                    {/* Password */}
-                    <div>
-                        <label className="mb-2 block text-sm font-semibold">
-                            Password
-                        </label>
-
-                        <div className="relative">
-                            <LockKeyhole className="absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-brand" />
-
-                            <input type={showPassword ? "text" : "password"}
-                                placeholder={'Create a password'}
-                                autoComplete="new-password"
-                                className="icon-input"
-                            />
-
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground transition-colors hover:text-brand"
-                                aria-label="Toggle password visibility"
-                            >
-                                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Remember me / forgot password */}
-                    <div className="flex items-center justify-between gap-2 pt-1">
-                        <label className="flex cursor-pointer items-center gap-2 text-xs text-gray-600">
-                            <input
-                                type="checkbox"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                                className="size-4 rounded border-gray-300 dark:border-gray-600 accent-brand"
-                            />
-                            Remember me
-                        </label>
-
-                        <a
-                            href="/forgot-password"
-                            className="text-xs font-semibold text-brand transition-colors hover:text-brand/80"
-                        >
-                            Forgot Password?
-                        </a>
-                    </div>
-
-                    {/* Submit */}
-                    <div className="mt-8">
-                        <button
-                            type="submit"
-                            className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-brand text-sm cursor-pointer font-bold text-white shadow-lg shadow-brand/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-brand/30 active:scale-[0.98]"
-                        >
-                            <LogIn size={18} />
-                            Login
-                        </button>
-                    </div>
-                </form>
+                <SigninForm />
 
                 {/* Divider */}
                 <div className="my-5 flex items-center gap-4">
