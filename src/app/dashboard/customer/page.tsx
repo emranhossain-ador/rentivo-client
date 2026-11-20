@@ -8,9 +8,9 @@ import {
     ArrowRight,
     MapPin,
 } from "lucide-react";
-import Header from "./_components/header";
 import Statistics from "./_components/Statistics";
 import Image from "next/image";
+import Header from "@/components/dashboard/Header";
 
 
 export default function UserDashboard() {

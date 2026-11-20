@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Open_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import MainLayout from "@/components/MainLayout";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -33,8 +34,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
 
+        <TooltipProvider>
+          <MainLayout>{children}</MainLayout>
+        </TooltipProvider>
 
-        <MainLayout>{children}</MainLayout>
+
       </body>
     </html>
   );

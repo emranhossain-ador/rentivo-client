@@ -9,6 +9,7 @@ import {
     X,
 } from "lucide-react";
 import { customerNavItems } from "../customer/customerNavItems";
+import { adminNavItems } from "../admin/adminNavItems";
 
 interface SidebarProps {
     mobileOpen?: boolean;
@@ -27,11 +28,18 @@ export default function DashboardSidebar({
 }: SidebarProps) {
     const pathname = usePathname();
 
+    const role = 'admin';
+
 
     const navItems: NavItem[] = [];
 
+    if (role === 'admin') {
+        navItems.push(...adminNavItems);
+    } else {
+        navItems.push(...customerNavItems);
+    }
 
-    navItems.push(...customerNavItems);
+
 
 
     // user info 
