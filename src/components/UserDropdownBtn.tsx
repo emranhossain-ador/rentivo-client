@@ -41,7 +41,7 @@ const UserDropdownBtn = ({ user }: { user: UserType }) => {
             <DropdownMenuTrigger render={
                 <button className="group flex items-center gap-2 rounded-full border border-border bg-card py-1.25 pl-1.5 pr-3 transition-all duration-300 hover:border-brand/40 hover:bg-muted cursor-pointer">
                     <Avatar className="h-9 w-9">
-                        <AvatarImage src={user.image || ""} alt={user.name} />
+                        <AvatarImage src={user.image || undefined} alt={user.name} />
                         <AvatarFallback className="bg-primary/10 font-semibold text-brand">
                             {user.name?.charAt(0).toUpperCase()}
                         </AvatarFallback>
@@ -66,7 +66,7 @@ const UserDropdownBtn = ({ user }: { user: UserType }) => {
                     <DropdownMenuLabel className="px-2 py-3">
                         <div className="flex items-center gap-3">
                             <Avatar className="h-11 w-11">
-                                <AvatarImage src={user.image || ""} alt={user.name} />
+                                <AvatarImage src={user.image || undefined} alt={user.name} />
                                 <AvatarFallback className="bg-primary/10 text-primary">
                                     {user.name?.charAt(0).toUpperCase()}
                                 </AvatarFallback>
