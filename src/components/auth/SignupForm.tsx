@@ -149,7 +149,9 @@ const SignupForm = () => {
                     email: email,
                     role: 'customer',
                     password: password,
-                    image: avatarUrl as string
+                    image: avatarUrl as string,
+                    phoneNumber: '',
+                    address: '',
                 });
 
                 if (error) {

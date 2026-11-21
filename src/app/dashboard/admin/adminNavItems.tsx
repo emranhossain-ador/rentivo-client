@@ -3,6 +3,7 @@ import {
     ShoppingBag,
     Users,
     DiagramFlowVertical,
+    User,
 } from "lucide-react";
 
 export const adminNavItems = [
@@ -25,5 +26,10 @@ export const adminNavItems = [
         name: "All Rentals",
         href: "/dashboard/admin/all-rentals",
         icon: DiagramFlowVertical,
+    },
+    {
+        name: "My Profile",
+        href: "/dashboard/admin/profile",
+        icon: User,
     }
 ];

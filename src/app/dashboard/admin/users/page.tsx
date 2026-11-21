@@ -1,11 +1,18 @@
 
 import PageHeading from "@/components/dashboard/PageHeading";
-import Statistics from "../_components/Statistics";
 import { Users } from "lucide-react";
 import UsersTable from "./_components/UsersTable";
+import { Suspense } from "react";
+import UserSkeleton from "./_components/UserSkeleton";
 
+interface UsersPageProps {
+    searchParams: Promise<{
+        [key: string]: string | string[] | undefined;
+    }>;
+}
 
-const UsersPage = () => {
+const UsersPage = ({ searchParams }: UsersPageProps) => {
+
 
     return (
         <main className="bg-background space-y-8">
@@ -17,12 +24,10 @@ const UsersPage = () => {
                 subTitle="Manage registered users and their account permissions."
             />
 
-            {/* Statistics */}
-            <Statistics />
-
             {/* Main Table */}
-            <UsersTable />
-
+            <Suspense fallback={<UserSkeleton />}>
+                <UsersTable searchParams={searchParams} />
+            </Suspense>
 
         </main>
     );

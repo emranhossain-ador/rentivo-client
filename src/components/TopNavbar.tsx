@@ -114,7 +114,7 @@ const TopNavbar = () => {
     }
   };
 
-  if (pathname.startsWith('/dashboard')) return null;
+  if (pathname.startsWith('/dashboard') || pathname === '/unauthorized') return null;
 
 
   return (

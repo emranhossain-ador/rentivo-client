@@ -1,6 +1,9 @@
+
+
 import { headers } from "next/headers";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";
+import { UserRole } from "../type/userType";
 
 export const getSession = async () => {
     const session = await auth.api.getSession({
@@ -11,7 +14,7 @@ export const getSession = async () => {
 };
 
 
-export const requireRole = async (role: "seeker" | "admin" | "recruiter") => {
+export const requireRole = async (role: UserRole) => {
     const session = await getSession();
 
     // Not logged in

@@ -12,7 +12,7 @@ import { customerNavItems } from "../customer/customerNavItems";
 import { adminNavItems } from "../admin/adminNavItems";
 import { ownerNavItems } from "../owner/ownerNavItems";
 import { useSession } from "@/lib/auth-client";
-import { UserRole } from "@/lib/type/userType";
+import { UserRole, UserType } from "@/lib/type/userType";
 
 interface SidebarProps {
     mobileOpen?: boolean;
@@ -31,7 +31,8 @@ export default function DashboardSidebar({
 }: SidebarProps) {
     const pathname = usePathname();
     const session = useSession();
-    const userRole = session?.data?.user?.role as UserRole;
+    const user = session?.data?.user as UserType;
+    const userRole = user?.role as UserRole;
 
 
 
@@ -117,22 +118,30 @@ export default function DashboardSidebar({
             {/* Bottom User Profile */}
             <div className="pt-4">
                 <div className="flex items-center gap-3 rounded-xl border border-border bg-background p-2.5 shadow-sm">
-                    <div className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border">
-                        <Image
-                            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-                            alt="Alex Rivera"
-                            width={32}
-                            height={32}
-                            unoptimized
-                            className="h-full w-full object-cover"
-                        />
+                    <div className="relative flex size-8 shrink-0 items-center font-bold text-sm bg-brand text-white justify-center overflow-hidden rounded-full border border-border">
+                        {
+                            user?.image ?
+                                <Image
+                                    src={user?.image}
+                                    alt={user?.name}
+                                    width={32}
+                                    height={32}
+                                    unoptimized
+                                    className="h-full w-full object-cover"
+                                />
+                                :
+                                user?.name?.charAt(0).toUpperCase()
+
+                        }
+
+
                     </div>
                     <div className="min-w-0 flex-1">
                         <div className="truncate text-xs font-bold text-foreground">
-                            Emran
+                            {user?.name}
                         </div>
                         <div className="truncate text-[11px] text-foreground/80">
-                            emran@gmail.com
+                            {user?.email}
                         </div>
                     </div>
                 </div>
