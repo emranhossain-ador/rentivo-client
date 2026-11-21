@@ -6,17 +6,17 @@ type Status = "pending" | "approved" | "rejected";
 
 export interface EquipmentType {
     _id?: string;
-    ownerId: string
+    ownerId: string;
     equipmentName: string;
-    description: string
-    categoryName: string
-    location: string
-    rentalPrice: string;
+    description: string;
+    categoryName: string;
+    location: string;
+    rentalPrice: number;
     rentalType: RentalType;
-    quantity: string;
-    condition: EquipmentCondition
-    brand: string
-    model: string
+    quantity: number;
+    condition: EquipmentCondition;
+    brand: string;
+    model: string;
     images: string[];
     terms: string;
     status?: Status;

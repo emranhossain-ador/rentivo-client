@@ -1,6 +1,7 @@
 
 
-const Header = () => {
+const Header = ({ name }: { name: string }) => {
+
     return (
         <div className="relative">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium backdrop-blur-sm bg-brand/5 text-brand">
@@ -9,7 +10,7 @@ const Header = () => {
             </div>
 
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl dark:text-white ">
-                Welcome back, Emran! 👋
+                Welcome back, {name}! 👋
             </h1>
         </div>
     )

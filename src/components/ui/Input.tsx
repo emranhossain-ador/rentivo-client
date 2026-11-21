@@ -1,7 +1,7 @@
 type InputType = {
     type?: string;
     name: string;
-    value?: string;
+    value?: string | number;
     className?: string;
     placeholder?: string;
     min?: string;

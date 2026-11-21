@@ -11,7 +11,7 @@ import {
     ArrowRight,
 } from "lucide-react";
 
-export default function NotFound() {
+export default function notFound() {
     return (
         <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-5">
             {/* Background Decoration */}

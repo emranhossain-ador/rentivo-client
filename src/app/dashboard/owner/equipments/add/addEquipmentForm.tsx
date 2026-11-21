@@ -1,17 +1,22 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
 import { ValidationErrors } from "@/components/ValidationError";
 import { categories } from "@/data/categoryData";
 import { equipmentCondition } from "@/data/equipmentCondition";
-import { addEquipment } from "@/lib/actions/equipment";
 import { useSession } from "@/lib/auth-client";
 import { EquipmentType } from "@/lib/type/equipmentType";
 import { EquipmentFormErrors, validateEquipment } from "@/lib/validations/equipmentValidation";
 import { CheckCircle2, FileText, ImagePlus, Info, Loader2, LucideIcon, MapPin, Package, Settings2, Trash2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { FormEvent, ReactNode, useRef, useState } from "react";
+
+import {
+    addEquipment,
+    updateEquipment,
+} from "@/lib/actions/equipment";
 
 import {
     type ChangeEvent,
@@ -22,7 +27,7 @@ import { toast } from "react-toastify";
 // Image object type
 export interface EquipmentImage {
     id: string;
-    file: File;
+    file?: File;
     preview: string;
     url: string;
 }
@@ -59,63 +64,32 @@ function SectionCard({ icon: Icon, title, description, children }: SectionCardTy
 }
 
 
+interface EquipmentFormProps {
+    equipment?: EquipmentType;
+}
 
 
-const AddEquipmentForm = () => {
+const AddEquipmentForm = ({ equipment }: EquipmentFormProps) => {
+
+    const router = useRouter();
+    const isEdit = Boolean(equipment?._id);
 
 
     const [error, setError] = useState<EquipmentFormErrors>({});
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const [images, setImages] = useState<EquipmentImage[]>([]);
+    const [images, setImages] = useState<EquipmentImage[]>(() =>
+        (equipment?.images ?? []).map((url, index) => ({
+            id: `existing-${index}`,
+            preview: url,
+            url,
+        }))
+    );
+
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState("");
 
-
-    // Process Selected Files
-    // const processFiles = (files: FileList | File[]): void => {
-    //     setUploadError("");
-
-    //     const selectedFiles = Array.from(files);
-    //     const validFiles: File[] = [];
-
-    //     selectedFiles.forEach((file) => {
-    //         if (!file.type.startsWith("image/")) {
-    //             setUploadError("Please select valid image files.");
-    //             return;
-    //         }
-
-    //         if (file.size > 5 * 1024 * 1024) {
-    //             setUploadError("Each image must be smaller than 5MB.");
-    //             return;
-    //         }
-
-    //         validFiles.push(file);
-    //     });
-
-    //     const remainingSlots = 5 - images.length;
-
-    //     if (remainingSlots <= 0) {
-    //         setUploadError("You can upload a maximum of 5 images.");
-    //         return;
-    //     }
-
-    //     if (validFiles.length > remainingSlots) {
-    //         setUploadError("You can upload a maximum of 5 images.");
-    //     }
-
-    //     const newImages: EquipmentImage[] = validFiles
-    //         .slice(0, remainingSlots)
-    //         .map((file) => ({
-    //             id: crypto.randomUUID(),
-    //             file,
-    //             preview: URL.createObjectURL(file),
-    //             url: "",
-    //         }));
-
-    //     setImages((prev) => [...prev, ...newImages]);
-    // };
 
 
     // Upload Images to ImgBB
@@ -179,6 +153,10 @@ const AddEquipmentForm = () => {
             const uploadedImages = await Promise.all(
                 newImages.map(async (image) => {
                     const formData = new FormData();
+                    if (!image.file) {
+                        throw new Error("Image file not found");
+                    }
+
                     formData.append("image", image.file);
 
                     const imgApi = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`;
@@ -338,9 +316,9 @@ const AddEquipmentForm = () => {
             description: String(formData.get("description") || "").trim(),
             categoryName: String(formData.get("categoryName") || ""),
             location: String(formData.get("location") || "").trim(),
-            rentalPrice: String(formData.get("rentalPrice") || ""),
+            rentalPrice: Number(formData.get("rentalPrice") || 0),
             rentalType: formData.get("rentalType") as EquipmentType["rentalType"],
-            quantity: String(formData.get("quantity") || ""),
+            quantity: Number(formData.get("quantity") || 0),
             condition: formData.get("condition") as EquipmentType["condition"],
             brand: String(formData.get("brand") || "").trim(),
             model: String(formData.get("model") || "").trim(),
@@ -351,21 +329,31 @@ const AddEquipmentForm = () => {
         try {
             setUploading(true);
 
-            const result = await addEquipment(data);
+            const result = isEdit
+                ? await updateEquipment(equipment!._id!, data)
+                : await addEquipment(data);
 
-            if (result.success) {
-                toast.success("Equipment added successfully!");
 
-                form.reset();
-                setError({});
+            if (result?.success === true) {
 
-                // Clear uploaded images
-                images.forEach((image) => {
-                    URL.revokeObjectURL(image.preview);
-                });
+                if (isEdit) {
+                    toast.success("Equipment updated successfully!");
+                } else {
+                    toast.success("Equipment added successfully!");
+                }
 
-                setImages([]);
-                setUploadError("");
+
+                if (!isEdit) {
+                    form.reset();
+                    setError({});
+                    setImages([]);
+                    setUploadError("");
+                }
+
+
+                router.push("/dashboard/owner/equipments");
+
+
             } else {
                 toast.error(result.message || "Failed to add equipment!");
             }
@@ -398,6 +386,7 @@ const AddEquipmentForm = () => {
                         <Label htmlFor="equipmentName" title="Equipment Name" isRequired={true} />
                         <Input
                             name="equipmentName"
+                            value={equipment?.equipmentName ?? ""}
                             placeholder="e.g. Excavator Machine"
                         />
                         {error.equipmentName && <ValidationErrors msg={error.equipmentName} />}
@@ -405,7 +394,9 @@ const AddEquipmentForm = () => {
 
                     <div className="space-y-1">
                         <Label htmlFor="categoryName" title="Category" isRequired={true} />
-                        <select name="categoryName" className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
+                        <select name="categoryName"
+                            defaultValue={equipment?.categoryName ?? ""}
+                            className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
                             <option disabled>Select category</option>
                             {
                                 categories.map(category =>
@@ -421,6 +412,7 @@ const AddEquipmentForm = () => {
                         <textarea
                             rows={5}
                             name="description"
+                            defaultValue={equipment?.description ?? ""}
                             placeholder="Write a detailed description of your equipment..."
                             className={`w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10 resize-y`}
                         />
@@ -438,19 +430,21 @@ const AddEquipmentForm = () => {
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     <div className="space-y-1">
                         <Label htmlFor="location" title="Location" isRequired={true} />
-                        <Input name="location" placeholder="e.g. Dhaka, Bangladesh" />
+                        <Input name="location" value={equipment?.location ?? ""} placeholder="e.g. Dhaka, Bangladesh" />
                         {error.location && <ValidationErrors msg={error.location} />}
                     </div>
 
                     <div className="space-y-1">
                         <Label htmlFor="rentalPrice" title="Rental Price (৳)" isRequired={true} />
-                        <Input name="rentalPrice" placeholder="0.00" />
+                        <Input name="rentalPrice" value={equipment?.rentalPrice ?? ""} placeholder="0.00" />
                         {error.rentalPrice && <ValidationErrors msg={error.rentalPrice} />}
                     </div>
 
                     <div className="space-y-1">
                         <Label htmlFor="rentalType" title="Rental Type" isRequired={true} />
-                        <select name="rentalType" className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
+                        <select name="rentalType"
+                            defaultValue={equipment?.rentalType ?? ""}
+                            className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
                             <option disabled>Select</option>
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
@@ -461,7 +455,7 @@ const AddEquipmentForm = () => {
 
                     <div className="space-y-1">
                         <Label htmlFor="quantity" title="Available Quantity" isRequired={true} />
-                        <Input min="1" name="quantity" placeholder="Available units" />
+                        <Input min="1" name="quantity" value={equipment?.quantity ?? ""} placeholder="Available units" />
                         {error.quantity && <ValidationErrors msg={error.quantity} />}
                     </div>
                 </div>
@@ -476,7 +470,10 @@ const AddEquipmentForm = () => {
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     <div className="space-y-1">
                         <Label htmlFor="condition" title="Equipment Condition" isRequired={true} />
-                        <select name="condition" className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
+                        <select
+                            name="condition"
+                            defaultValue={equipment?.condition ?? ""}
+                            className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
                             {
                                 equipmentCondition.map((condition, i) =>
                                     <option key={i} value={condition}>{condition}</option>
@@ -488,13 +485,13 @@ const AddEquipmentForm = () => {
 
                     <div className="space-y-1">
                         <Label htmlFor="brand" title="Brand" isRequired={true} />
-                        <Input name="brand" placeholder="e.g. Caterpillar" />
+                        <Input name="brand" value={equipment?.brand ?? ""} placeholder="e.g. Caterpillar" />
                         {error.brand && <ValidationErrors msg={error.brand} />}
                     </div>
 
                     <div className="space-y-1">
                         <Label htmlFor="model" title="Model" isRequired={true} />
-                        <Input name="model" placeholder="e.g. CAT 320D" />
+                        <Input name="model" value={equipment?.model ?? ""} placeholder="e.g. CAT 320D" />
                         {error.model && <ValidationErrors msg={error.model} />}
                     </div>
                 </div>
@@ -607,13 +604,12 @@ const AddEquipmentForm = () => {
                 title="Rental Terms & Conditions"
                 description="Explain your rental rules, policies and responsibilities."
             >
-
-
                 <div className="space-y-1">
                     <Label htmlFor="terms" title="Terms and Conditions" isRequired={true} />
                     <textarea
                         rows={5}
                         name="terms"
+                        defaultValue={equipment?.terms ?? ""}
                         placeholder={"Example:\n• Equipment must be returned on time.\n• Renters are responsible for any damage.\n• Late returns may have additional charges."}
                         className={`w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10 resize-y`}
                     />
@@ -648,7 +644,13 @@ const AddEquipmentForm = () => {
                         ) : (
                             <>
                                 <CheckCircle2 size={18} />
-                                Add Equipment
+                                {
+                                    isEdit ?
+                                        'Update Equipment'
+                                        :
+                                        'Add Equipment'
+                                }
+
                             </>
                         )}
                     </Button>
