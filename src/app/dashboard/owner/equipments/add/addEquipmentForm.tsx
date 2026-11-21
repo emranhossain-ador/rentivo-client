@@ -2,22 +2,30 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
+import { ValidationErrors } from "@/components/ValidationError";
+import { categories } from "@/data/categoryData";
+import { equipmentCondition } from "@/data/equipmentCondition";
+import { addEquipment } from "@/lib/actions/equipment";
+import { useSession } from "@/lib/auth-client";
+import { EquipmentType } from "@/lib/type/equipmentType";
+import { EquipmentFormErrors, validateEquipment } from "@/lib/validations/equipmentValidation";
 import { CheckCircle2, FileText, ImagePlus, Info, Loader2, LucideIcon, MapPin, Package, Settings2, Trash2, Upload, X } from "lucide-react";
 import Image from "next/image";
-import { ReactNode, useRef, useState } from "react";
+import { FormEvent, ReactNode, useRef, useState } from "react";
 
 import {
     type ChangeEvent,
     type DragEvent,
 } from "react";
+import { toast } from "react-toastify";
 
 // Image object type
-type EquipmentImage = {
+export interface EquipmentImage {
     id: string;
     file: File;
     preview: string;
     url: string;
-};
+}
 
 // ImgBB API response type
 type SectionCardType = {
@@ -51,77 +59,182 @@ function SectionCard({ icon: Icon, title, description, children }: SectionCardTy
 }
 
 
+
+
 const AddEquipmentForm = () => {
+
+
+    const [error, setError] = useState<EquipmentFormErrors>({});
+
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [images, setImages] = useState<EquipmentImage[]>([]);
-    const [uploading, setUploading] = useState<boolean>(false);
-    const [uploadError, setUploadError] = useState<string>("");
+    const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState("");
 
 
+    // Process Selected Files
+    // const processFiles = (files: FileList | File[]): void => {
+    //     setUploadError("");
 
-    const processFiles = (files: FileList | File[]): void => {
-        setUploadError("");
+    //     const selectedFiles = Array.from(files);
+    //     const validFiles: File[] = [];
+
+    //     selectedFiles.forEach((file) => {
+    //         if (!file.type.startsWith("image/")) {
+    //             setUploadError("Please select valid image files.");
+    //             return;
+    //         }
+
+    //         if (file.size > 5 * 1024 * 1024) {
+    //             setUploadError("Each image must be smaller than 5MB.");
+    //             return;
+    //         }
+
+    //         validFiles.push(file);
+    //     });
+
+    //     const remainingSlots = 5 - images.length;
+
+    //     if (remainingSlots <= 0) {
+    //         setUploadError("You can upload a maximum of 5 images.");
+    //         return;
+    //     }
+
+    //     if (validFiles.length > remainingSlots) {
+    //         setUploadError("You can upload a maximum of 5 images.");
+    //     }
+
+    //     const newImages: EquipmentImage[] = validFiles
+    //         .slice(0, remainingSlots)
+    //         .map((file) => ({
+    //             id: crypto.randomUUID(),
+    //             file,
+    //             preview: URL.createObjectURL(file),
+    //             url: "",
+    //         }));
+
+    //     setImages((prev) => [...prev, ...newImages]);
+    // };
+
+
+    // Upload Images to ImgBB
+    const handleImageChange = async (
+        event: ChangeEvent<HTMLInputElement>
+    ) => {
+        const files = event.target.files;
+
+        if (!files || files.length === 0) return;
 
         const selectedFiles = Array.from(files);
 
-        const validFiles: File[] = [];
-
-        selectedFiles.forEach((file) => {
-            if (!file.type.startsWith("image/")) {
-                setUploadError("Please select valid image files.");
-                return;
-            }
-
-            if (file.size > 5 * 1024 * 1024) {
-                setUploadError("Each image must be smaller than 5MB.");
-                return;
-            }
-
-            validFiles.push(file);
-        });
-
+        // Validate and create previews
         const remainingSlots = 5 - images.length;
 
         if (remainingSlots <= 0) {
             setUploadError("You can upload a maximum of 5 images.");
+            event.target.value = "";
             return;
         }
 
-        if (validFiles.length > remainingSlots) {
+        const validFiles = selectedFiles.filter((file) => {
+            if (!file.type.startsWith("image/")) {
+                setUploadError("Please select valid image files.");
+                return false;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                setUploadError("Each image must be smaller than 5MB.");
+                return false;
+            }
+
+            return true;
+        });
+
+        const acceptedFiles = validFiles.slice(0, remainingSlots);
+
+        if (acceptedFiles.length < validFiles.length) {
             setUploadError("You can upload a maximum of 5 images.");
         }
 
-        const newImages: EquipmentImage[] = validFiles
-            .slice(0, remainingSlots)
-            .map((file) => ({
-                id: crypto.randomUUID(),
-                file,
-                preview: URL.createObjectURL(file),
-                url: "",
-            }));
-
-        setImages((prev) => [...prev, ...newImages]);
-    };
-
-    const handleImageChange = (
-        event: ChangeEvent<HTMLInputElement>
-    ): void => {
-        const files = event.target.files;
-
-        if (files) {
-            processFiles(files);
+        if (acceptedFiles.length === 0) {
+            event.target.value = "";
+            return;
         }
 
+        const newImages: EquipmentImage[] = acceptedFiles.map((file) => ({
+            id: crypto.randomUUID(),
+            file,
+            preview: URL.createObjectURL(file),
+            url: "",
+        }));
+
+        setImages((prev) => [...prev, ...newImages]);
+
         event.target.value = "";
+
+        setUploading(true);
+
+        try {
+            const uploadedImages = await Promise.all(
+                newImages.map(async (image) => {
+                    const formData = new FormData();
+                    formData.append("image", image.file);
+
+                    const imgApi = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`;
+
+                    const res = await fetch(imgApi, {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const result = await res.json();
+
+                    if (!res.ok || !result.success) {
+                        throw new Error(`Failed to upload ${image.file.name}`);
+                    }
+
+                    return {
+                        id: image.id,
+                        url: result.data.url,
+                    };
+                })
+            );
+
+            setImages((prev) =>
+                prev.map((image) => {
+                    const uploaded = uploadedImages.find(
+                        (item) => item.id === image.id
+                    );
+
+                    return uploaded ? { ...image, url: uploaded.url } : image;
+                })
+            );
+
+            toast.success("Images uploaded successfully!");
+        } catch (err) {
+            console.error(err);
+
+            setUploadError(
+                err instanceof Error ? err.message : "Image upload failed!"
+            );
+
+            toast.error("Failed to upload images!");
+        } finally {
+            setUploading(false);
+        }
     };
 
+
+    // Drag Over
     const handleDragOver = (
         event: DragEvent<HTMLDivElement>
     ): void => {
         event.preventDefault();
     };
 
+
+    // Drop Files
     const handleDrop = (
         event: DragEvent<HTMLDivElement>
     ): void => {
@@ -130,10 +243,31 @@ const AddEquipmentForm = () => {
         const files = event.dataTransfer.files;
 
         if (files.length > 0) {
-            processFiles(files);
+            handleDroppedFiles(files);
         }
     };
 
+
+    // Handle Drag & Drop Upload
+    const handleDroppedFiles = async (files: FileList) => {
+        // Reuse the same upload handler through the input
+        if (!fileInputRef.current) return;
+
+        const dataTransfer = new DataTransfer();
+
+        Array.from(files).forEach((file) => {
+            dataTransfer.items.add(file);
+        });
+
+        fileInputRef.current.files = dataTransfer.files;
+
+        await handleImageChange({
+            target: fileInputRef.current,
+        } as ChangeEvent<HTMLInputElement>);
+    };
+
+
+    // Remove Single Image
     const removeImage = (id: string): void => {
         const image = images.find((item) => item.id === id);
 
@@ -144,6 +278,8 @@ const AddEquipmentForm = () => {
         setImages((prev) => prev.filter((item) => item.id !== id));
     };
 
+
+    // Remove All Images
     const removeAllImages = (): void => {
         images.forEach((image) => {
             URL.revokeObjectURL(image.preview);
@@ -154,8 +290,102 @@ const AddEquipmentForm = () => {
     };
 
 
+    const session = useSession();
+    const user = session?.data?.user;
+
+    // Handle submit    
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+
+        // Validation
+        const validationErrors = validateEquipment(formData);
+
+        // Validate selected images from state
+        if (images.length === 0) {
+            validationErrors.images = "Please upload at least 1 image";
+        } else if (images.some((image) => !image.url)) {
+            validationErrors.images = "Please wait until all images finish uploading";
+        }
+
+        setError(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
+            toast.error("Please fix the validation errors!");
+            return;
+        }
+
+        // Check image upload
+        if (uploading) {
+            toast.error("Please wait until images finish uploading!");
+            return;
+        }
+
+        const uploadedUrls = images.map((image) => image.url);
+
+        if (uploadedUrls.length === 0 || uploadedUrls.some((url) => !url)) {
+            toast.error("Please upload all equipment images!");
+            return;
+        }
+
+        // Convert FormData to JSON
+        const data: EquipmentType = {
+            ownerId: user?.id as string,
+            equipmentName: String(formData.get("equipmentName") || "").trim(),
+            description: String(formData.get("description") || "").trim(),
+            categoryName: String(formData.get("categoryName") || ""),
+            location: String(formData.get("location") || "").trim(),
+            rentalPrice: String(formData.get("rentalPrice") || ""),
+            rentalType: formData.get("rentalType") as EquipmentType["rentalType"],
+            quantity: String(formData.get("quantity") || ""),
+            condition: formData.get("condition") as EquipmentType["condition"],
+            brand: String(formData.get("brand") || "").trim(),
+            model: String(formData.get("model") || "").trim(),
+            images: uploadedUrls,
+            terms: String(formData.get("terms") || "").trim(),
+        };
+
+        try {
+            setUploading(true);
+
+            const result = await addEquipment(data);
+
+            if (result.success) {
+                toast.success("Equipment added successfully!");
+
+                form.reset();
+                setError({});
+
+                // Clear uploaded images
+                images.forEach((image) => {
+                    URL.revokeObjectURL(image.preview);
+                });
+
+                setImages([]);
+                setUploadError("");
+            } else {
+                toast.error(result.message || "Failed to add equipment!");
+            }
+        } catch (err) {
+            console.error(err);
+
+            toast.error(
+                err instanceof Error ? err.message : "Something went wrong!"
+            );
+        } finally {
+            setUploading(false);
+        }
+    };
+
+
+
+
+
     return (
-        <form className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* 1. Basic Information */}
             <SectionCard
@@ -165,32 +395,36 @@ const AddEquipmentForm = () => {
             >
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <div className="space-y-1">
-                        <Label htmlFor="equipment_Name" title="Equipment Name" isRequired={true} />
+                        <Label htmlFor="equipmentName" title="Equipment Name" isRequired={true} />
                         <Input
-                            name="equipment_Name"
+                            name="equipmentName"
                             placeholder="e.g. Excavator Machine"
                         />
+                        {error.equipmentName && <ValidationErrors msg={error.equipmentName} />}
                     </div>
 
                     <div className="space-y-1">
-                        <Label htmlFor="category" title="Category" isRequired={true} />
-                        <select name="category" className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
+                        <Label htmlFor="categoryName" title="Category" isRequired={true} />
+                        <select name="categoryName" className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
                             <option disabled>Select category</option>
-                            <option value="Construction">Construction</option>
-                            <option value="Construction">Construction</option>
-                            <option value="Construction">Construction</option>
+                            {
+                                categories.map(category =>
+                                    <option key={category.id} value={category.name}>{category.name}</option>
+                                )
+                            }
                         </select>
+                        {error.categoryName && <ValidationErrors msg={error.categoryName} />}
                     </div>
 
                     <div className="space-y-1 sm:col-span-2">
                         <Label htmlFor="description" title="Description" isRequired={true} />
                         <textarea
-                            required
                             rows={5}
                             name="description"
                             placeholder="Write a detailed description of your equipment..."
                             className={`w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10 resize-y`}
                         />
+                        {error.description && <ValidationErrors msg={error.description} />}
                     </div>
                 </div>
             </SectionCard>
@@ -205,26 +439,30 @@ const AddEquipmentForm = () => {
                     <div className="space-y-1">
                         <Label htmlFor="location" title="Location" isRequired={true} />
                         <Input name="location" placeholder="e.g. Dhaka, Bangladesh" />
+                        {error.location && <ValidationErrors msg={error.location} />}
                     </div>
 
                     <div className="space-y-1">
                         <Label htmlFor="rentalPrice" title="Rental Price (৳)" isRequired={true} />
                         <Input name="rentalPrice" placeholder="0.00" />
+                        {error.rentalPrice && <ValidationErrors msg={error.rentalPrice} />}
                     </div>
 
                     <div className="space-y-1">
                         <Label htmlFor="rentalType" title="Rental Type" isRequired={true} />
                         <select name="rentalType" className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
                             <option disabled>Select</option>
-                            <option value="Construction">Daily</option>
-                            <option value="Construction">Weekly</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
                         </select>
+                        {error.rentalType && <ValidationErrors msg={error.rentalType} />}
                     </div>
 
                     <div className="space-y-1">
-                        <Label htmlFor="availableQuantity" title="Available Quantity" isRequired={true} />
-                        <Input min="1" name="availableQuantity" placeholder="Available units" />
+                        <Label htmlFor="quantity" title="Available Quantity" isRequired={true} />
+                        <Input min="1" name="quantity" placeholder="Available units" />
+                        {error.quantity && <ValidationErrors msg={error.quantity} />}
                     </div>
                 </div>
             </SectionCard>
@@ -239,22 +477,25 @@ const AddEquipmentForm = () => {
                     <div className="space-y-1">
                         <Label htmlFor="condition" title="Equipment Condition" isRequired={true} />
                         <select name="condition" className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
-                            <option value="Brand New">Brand New</option>
-                            <option value="Construction">Like New</option>
-                            <option value="monthly">Excellent</option>
-                            <option value="monthly">Good</option>
-                            <option value="monthly">Fair</option>
+                            {
+                                equipmentCondition.map((condition, i) =>
+                                    <option key={i} value={condition}>{condition}</option>
+                                )
+                            }
                         </select>
+                        {error.condition && <ValidationErrors msg={error.condition} />}
                     </div>
 
                     <div className="space-y-1">
                         <Label htmlFor="brand" title="Brand" isRequired={true} />
                         <Input name="brand" placeholder="e.g. Caterpillar" />
+                        {error.brand && <ValidationErrors msg={error.brand} />}
                     </div>
 
                     <div className="space-y-1">
                         <Label htmlFor="model" title="Model" isRequired={true} />
                         <Input name="model" placeholder="e.g. CAT 320D" />
+                        {error.model && <ValidationErrors msg={error.model} />}
                     </div>
                 </div>
             </SectionCard>
@@ -356,6 +597,8 @@ const AddEquipmentForm = () => {
                         {uploadError}
                     </p>
                 )}
+
+                {error.images && <ValidationErrors msg={error.images} />}
             </SectionCard>
 
             {/* 5. Terms */}
@@ -369,12 +612,12 @@ const AddEquipmentForm = () => {
                 <div className="space-y-1">
                     <Label htmlFor="terms" title="Terms and Conditions" isRequired={true} />
                     <textarea
-                        required
                         rows={5}
                         name="terms"
                         placeholder={"Example:\n• Equipment must be returned on time.\n• Renters are responsible for any damage.\n• Late returns may have additional charges."}
                         className={`w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10 resize-y`}
                     />
+                    {error.terms && <ValidationErrors msg={error.terms} />}
                 </div>
             </SectionCard>
 
