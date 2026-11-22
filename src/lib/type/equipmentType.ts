@@ -1,4 +1,5 @@
 import { EquipmentCondition } from "@/data/equipmentCondition";
+import { UserType } from "./userType";
 
 type RentalType = "daily" | "weekly" | "monthly";
 
@@ -20,6 +21,9 @@ export interface EquipmentType {
     images: string[];
     terms: string;
     status?: Status;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt?: string;
+    updatedAt?: string;
+
+    // Owner information
+    owner?: UserType | null;
 }

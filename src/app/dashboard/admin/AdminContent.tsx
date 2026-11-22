@@ -7,8 +7,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Header from "@/components/dashboard/Header";
-import Statistics from "./_components/Statistics";
 import { getSession } from "@/lib/core/server";
+import AdminStatistics from "./_components/AdminStatistics";
 
 const AdminContent = async () => {
 
@@ -18,8 +18,7 @@ const AdminContent = async () => {
         <>
             <Header name={user?.name as string} />
 
-            {/* Statistics */}
-            <Statistics />
+            <AdminStatistics />
 
             {/* Main dashboard content */}
             <section className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-5">

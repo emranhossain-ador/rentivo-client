@@ -27,3 +27,9 @@ export const getEquipmentById = async (id: string) => {
 
     return result.data;
 };
+
+
+export const getAllEquipments = async (query = '') => {
+    const res = await fetch(`${API_BASE_URL}/equipments?${query}`);
+    return res.json();
+}
