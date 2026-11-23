@@ -33,3 +33,15 @@ export const getAllEquipments = async (query = '') => {
     const res = await fetch(`${API_BASE_URL}/equipments?${query}`);
     return res.json();
 }
+
+
+export const getFeaturedEquipment = async () => {
+    const res = await fetch(`${API_BASE_URL}/equipments/latest-approved`);
+    return res.json();
+}
+
+
+export const getApprovedEquipments = async (query = '') => {
+    const res = await fetch(`${API_BASE_URL}/approved-equipments?${query}`);
+    return res.json();
+}

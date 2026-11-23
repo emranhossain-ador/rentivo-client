@@ -1,85 +1,14 @@
 
-"use client";
 
-import Link from "next/link";
 import {
-    ArrowRight,
-    CarFront,
-    Camera,
     Star,
-    Tractor,
 } from "lucide-react";
 
-import EquipmentCard from "../EquipmentCard";
 import ViewAll from "../ViewAll";
+import FeaturedEquipmentGrid from "./FeaturedEquipmentGrid";
+import { Suspense } from "react";
+import EquipmentCardSkeleton from "./EquipmentCardSkeleton";
 
-const equipment = [
-    {
-        id: 1,
-        name: "Toyota Corolla",
-        category: "Vehicles & Transportation",
-        categoryIcon: CarFront,
-        image: "/images/equipment/toyota.jpg",
-        rating: 4.7,
-        reviews: 120,
-        location: "Dhaka, Bangladesh",
-        price: 70,
-        available: true,
-        href: "/equipment/toyota-corolla",
-    },
-    {
-        id: 2,
-        name: "Canon DSLR Camera",
-        category: "Photography Equipment",
-        categoryIcon: Camera,
-        image: "/images/equipment/camera.jpg",
-        rating: 4.9,
-        reviews: 85,
-        location: "Chittagong, Bangladesh",
-        price: 50,
-        available: true,
-        href: "/equipment/canon-camera",
-    },
-    {
-        id: 3,
-        name: "Excavator Machine",
-        category: "Construction Equipment",
-        categoryIcon: Tractor,
-        image: "/images/equipment/excavator.jpg",
-        rating: 4.8,
-        reviews: 72,
-        location: "Dhaka, Bangladesh",
-        price: 150,
-        available: true,
-        href: "/equipment/excavator",
-    },
-    {
-        id: 4,
-        name: "Excavator Machine",
-        category: "Construction Equipment",
-        categoryIcon: Tractor,
-        image: "/images/equipment/excavator.jpg",
-        rating: 4.8,
-        reviews: 72,
-        location: "Dhaka, Bangladesh",
-        price: 150,
-        available: true,
-        href: "/equipment/excavator",
-    },
-    {
-        id: 5,
-        name: "Excavator Machine",
-        category: "Construction Equipment",
-        categoryIcon: Tractor,
-        image: "/images/equipment/excavator.jpg",
-        rating: 4.8,
-        reviews: 72,
-        location: "Dhaka, Bangladesh",
-        price: 150,
-        available: true,
-        href: "/equipment/excavator",
-    },
-];
 
 export default function FeaturedEquipment() {
 
@@ -131,16 +60,9 @@ export default function FeaturedEquipment() {
                 </div>
 
                 {/* Equipment Grid */}
-                <div className="grid grid-cols-2 gap-2.5 md:gap-6 md:grid-cols-3 xl:grid-cols-4">
-
-                    {equipment.map((item) => {
-
-                        return (
-                            <EquipmentCard key={item.id} />
-                        );
-                    })}
-
-                </div>
+                <Suspense fallback={<EquipmentCardSkeleton />}>
+                    <FeaturedEquipmentGrid />
+                </Suspense>
             </div>
         </section>
     );

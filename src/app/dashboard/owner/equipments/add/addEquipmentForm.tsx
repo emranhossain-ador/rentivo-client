@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
 import { ValidationErrors } from "@/components/ValidationError";
-import { categories } from "@/data/categoryData";
+import { getCategories } from "@/lib/api/categoris";
+import { CategoryType } from "@/lib/type/categoryType";
 import { equipmentCondition } from "@/data/equipmentCondition";
 import { useSession } from "@/lib/auth-client";
 import { EquipmentType } from "@/lib/type/equipmentType";
 import { EquipmentFormErrors, validateEquipment } from "@/lib/validations/equipmentValidation";
 import { CheckCircle2, FileText, ImagePlus, Info, Loader2, LucideIcon, MapPin, Package, Settings2, Trash2, Upload, X } from "lucide-react";
 import Image from "next/image";
-import { FormEvent, ReactNode, useRef, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 
 import {
     addEquipment,
@@ -89,6 +90,24 @@ const AddEquipmentForm = ({ equipment }: EquipmentFormProps) => {
 
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState("");
+    const [categoriesList, setCategoriesList] = useState<CategoryType[]>([]);
+    const [selectedCategoryName, setSelectedCategoryName] = useState<string>(
+        equipment?.categoryName ?? ""
+    );
+
+    useEffect(() => {
+        let isMounted = true;
+        const fetchCats = async () => {
+            const data = await getCategories();
+            if (isMounted) {
+                setCategoriesList(data || []);
+            }
+        };
+        fetchCats();
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
 
 
@@ -309,12 +328,17 @@ const AddEquipmentForm = ({ equipment }: EquipmentFormProps) => {
             return;
         }
 
+        const chosenCategoryName = String(formData.get("categoryName") || "");
+        const matchedCategory = categoriesList.find((c) => c.name === chosenCategoryName);
+        const chosenCategorySlug = matchedCategory?.slug || equipment?.categorySlug || "";
+
         // Convert FormData to JSON
         const data: EquipmentType = {
             ownerId: user?.id as string,
             equipmentName: String(formData.get("equipmentName") || "").trim(),
             description: String(formData.get("description") || "").trim(),
-            categoryName: String(formData.get("categoryName") || ""),
+            categoryName: chosenCategoryName,
+            categorySlug: chosenCategorySlug,
             location: String(formData.get("location") || "").trim(),
             rentalPrice: Number(formData.get("rentalPrice") || 0),
             rentalType: formData.get("rentalType") as EquipmentType["rentalType"],
@@ -394,14 +418,19 @@ const AddEquipmentForm = ({ equipment }: EquipmentFormProps) => {
 
                     <div className="space-y-1">
                         <Label htmlFor="categoryName" title="Category" isRequired={true} />
-                        <select name="categoryName"
-                            defaultValue={equipment?.categoryName ?? ""}
-                            className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10">
-                            <option disabled>Select category</option>
+                        <select
+                            name="categoryName"
+                            value={selectedCategoryName}
+                            onChange={(e) => setSelectedCategoryName(e.target.value)}
+                            className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10"
+                        >
+                            <option value="" disabled>Select category</option>
                             {
-                                categories.map(category =>
-                                    <option key={category.id} value={category.name}>{category.name}</option>
-                                )
+                                categoriesList.map((category) => (
+                                    <option key={category._id} value={category.name}>
+                                        {category.name}
+                                    </option>
+                                ))
                             }
                         </select>
                         {error.categoryName && <ValidationErrors msg={error.categoryName} />}

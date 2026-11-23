@@ -1,13 +1,24 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SlidersHorizontal, RotateCcw } from "lucide-react";
-import { categories } from "@/data/categoryData";
+import { getCategories } from "@/lib/api/categoris";
+import { CategoryType } from "@/lib/type/categoryType";
 
 const SearchFilter = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [categoriesList, setCategoriesList] = useState<CategoryType[]>([]);
+
+    useEffect(() => {
+        const fetchCats = async () => {
+            const data = await getCategories();
+            setCategoriesList(data || []);
+        };
+        fetchCats();
+    }, []);
 
     const status = searchParams.get("status") || "all";
     const category = searchParams.get("category") || "all";
@@ -68,7 +79,11 @@ const SearchFilter = () => {
                 >
                     <option value="all">All Categories</option>
                     {
-                        categories.map((category, i) => <option key={i} value={category.name}>{category.name}</option>)
+                        categoriesList.map((cat) => (
+                            <option key={cat._id} value={cat.name}>
+                                {cat.name}
+                            </option>
+                        ))
                     }
                 </select>
 

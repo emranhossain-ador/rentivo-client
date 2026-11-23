@@ -1,11 +1,12 @@
 
 import {
-    Search,
-    ArrowUpDown,
     Heart,
 } from "lucide-react";
-import EquimentTable from "./SavedEquimentTable";
+import EquimentTable from "./_components/SavedEquimentTable";
 import PageHeading from "@/components/dashboard/PageHeading";
+import { Suspense } from "react";
+import DashboardLayout from "../../layout";
+import DashboardLoader from "@/components/dashboard/DashboardLoader";
 
 
 const FavoritesPage = () => {
@@ -35,39 +36,9 @@ const FavoritesPage = () => {
 
                 </div>
 
-                {/* Filters */}
-                <div className="space-y-3 border-b border-border p-4">
-
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-
-                        {/* Search */}
-                        <div className="relative sm:col-span-2 lg:col-span-1">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-
-                            <input
-                                placeholder="Search equipment or ID..."
-                                className="h-10 w-full rounded-xl border border-input bg-background pl-9 pr-3 text-sm outline-none transition placeholder:text-muted-foreground focus:border-brand focus:ring-2 focus:ring-brand/10"
-                            />
-                        </div>
-
-                        {/* Sorting */}
-                        <div className="relative">
-                            <ArrowUpDown className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-
-                            <select
-                                className="h-10 w-full appearance-none rounded-xl border border-input bg-background pl-9 pr-3 text-sm outline-none focus:border-brand"
-                            >
-                                <option value="newest">Newest First</option>
-                                <option value="oldest">Oldest First</option>
-                                <option value="price-low">Price: Low to High</option>
-                                <option value="price-high">Price: High to Low</option>
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
-
-                <EquimentTable />
+                <Suspense fallback={<DashboardLoader />}>
+                    <EquimentTable />
+                </Suspense>
 
             </section>
 

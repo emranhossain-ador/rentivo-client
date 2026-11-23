@@ -10,6 +10,7 @@ export interface EquipmentType {
     ownerId: string;
     equipmentName: string;
     description: string;
+    categorySlug: string;
     categoryName: string;
     location: string;
     rentalPrice: number;

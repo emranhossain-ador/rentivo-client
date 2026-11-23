@@ -1,87 +1,123 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Filter, MapPin, RotateCcw, X } from "lucide-react";
+import { getCategories } from "@/lib/api/categoris";
+import { CategoryType } from "@/lib/type/categoryType";
 
-const categories = [
-    "Agriculture Equipment",
-    "Cleaning Equipment",
-    "Construction Equipment",
-    "Electronics",
-    "Event Equipment",
-    "Photography Equipment",
-    "Vehicles & Transportation",
+const rentalTypes = [
+    { label: "Daily", value: "daily" },
+    { label: "Weekly", value: "weekly" },
+    { label: "Monthly", value: "monthly" },
 ];
 
-const rentalTypes = ["Daily", "Weekly", "Monthly"];
+export default function EquipmentFilter() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
-export interface EquipmentFilters {
-    categories: string[];
-    location: string;
-    rentalTypes: string[];
-    minPrice: string;
-    maxPrice: string;
-    availableOnly: boolean;
-}
-
-interface EquipmentFilterProps {
-    onFilterChange?: (filters: EquipmentFilters) => void;
-}
-
-const initialFilters: EquipmentFilters = {
-    categories: [],
-    location: "",
-    rentalTypes: [],
-    minPrice: "",
-    maxPrice: "",
-    availableOnly: false,
-};
-
-export default function EquipmentFilter({
-    onFilterChange,
-}: EquipmentFilterProps) {
-    const [filters, setFilters] = useState<EquipmentFilters>(initialFilters);
+    const [categoriesList, setCategoriesList] = useState<CategoryType[]>([]);
     const [isOpen, setIsOpen] = useState(false);
 
-    // Notify parent when filters change
+    // Read current state from URL search params
+    const selectedCategory = searchParams.get("category") || "";
+    const selectedRentalType = searchParams.get("rentalType") || "";
+    const selectedLocation = searchParams.get("location") || "";
+    const selectedMinPrice = searchParams.get("minPrice") || "";
+    const selectedMaxPrice = searchParams.get("maxPrice") || "";
+    const selectedAvailability = searchParams.get("availability") || "";
+
+    // Local inputs for debounce/typing
+    const [locationInput, setLocationInput] = useState(selectedLocation);
+    const [minPriceInput, setMinPriceInput] = useState(selectedMinPrice);
+    const [maxPriceInput, setMaxPriceInput] = useState(selectedMaxPrice);
+
     useEffect(() => {
-        onFilterChange?.(filters);
-    }, [filters, onFilterChange]);
+        setLocationInput(selectedLocation);
+    }, [selectedLocation]);
 
-    // Update filters
-    const updateFilter = (updated: Partial<EquipmentFilters>) => {
-        setFilters((prev) => ({ ...prev, ...updated }));
-    };
+    useEffect(() => {
+        setMinPriceInput(selectedMinPrice);
+    }, [selectedMinPrice]);
 
-    // Toggle checkbox values
-    const toggleArrayValue = (
-        key: "categories" | "rentalTypes",
-        value: string
-    ) => {
-        const current = filters[key];
+    useEffect(() => {
+        setMaxPriceInput(selectedMaxPrice);
+    }, [selectedMaxPrice]);
 
-        updateFilter({
-            [key]: current.includes(value)
-                ? current.filter((item) => item !== value)
-                : [...current, value],
+    useEffect(() => {
+        const fetchCats = async () => {
+            const data = await getCategories();
+            setCategoriesList(data || []);
+        };
+        fetchCats();
+    }, []);
+
+    const updateQuery = (updates: Record<string, string | null>) => {
+        const params = new URLSearchParams(searchParams.toString());
+        Object.entries(updates).forEach(([key, val]) => {
+            if (!val || val === "all") {
+                params.delete(key);
+            } else {
+                params.set(key, val);
+            }
         });
+        router.push(`?${params.toString()}`, { scroll: false });
     };
 
-    // Clear all filters
-    const clearFilters = () => {
-        setFilters(initialFilters);
+    const handleCategoryToggle = (slugOrName: string) => {
+        if (selectedCategory === slugOrName) {
+            updateQuery({ category: null });
+        } else {
+            updateQuery({ category: slugOrName });
+        }
     };
+
+    const handleRentalTypeToggle = (type: string) => {
+        if (selectedRentalType === type) {
+            updateQuery({ rentalType: null });
+        } else {
+            updateQuery({ rentalType: type });
+        }
+    };
+
+    const handleAvailabilityToggle = () => {
+        if (selectedAvailability === "available") {
+            updateQuery({ availability: null });
+        } else {
+            updateQuery({ availability: "available" });
+        }
+    };
+
+    const clearFilters = () => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("category");
+        params.delete("rentalType");
+        params.delete("location");
+        params.delete("minPrice");
+        params.delete("maxPrice");
+        params.delete("availability");
+        setLocationInput("");
+        setMinPriceInput("");
+        setMaxPriceInput("");
+        router.push(`?${params.toString()}`, { scroll: false });
+    };
+
+    const activeFilterCount =
+        (selectedCategory ? 1 : 0) +
+        (selectedRentalType ? 1 : 0) +
+        (selectedLocation ? 1 : 0) +
+        (selectedMinPrice ? 1 : 0) +
+        (selectedMaxPrice ? 1 : 0) +
+        (selectedAvailability ? 1 : 0);
 
     return (
         <div className="w-full lg:w-70">
-
             {/* Mobile Filter Button */}
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground shadow-sm transition hover:border-brand hover:text-brand lg:hidden"
+                className="flex w-full items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground shadow-sm transition hover:border-brand hover:text-brand lg:hidden cursor-pointer"
             >
                 <span className="flex items-center gap-2">
                     <Filter size={17} className="text-brand" />
@@ -89,18 +125,12 @@ export default function EquipmentFilter({
                 </span>
 
                 <span className="flex items-center gap-2">
-                    <span className="rounded-full bg-brand/5 px-2 py-0.5 text-xs text-brand">
-                        {filters.categories.length +
-                            filters.rentalTypes.length +
-                            (filters.location ? 1 : 0) +
-                            (filters.minPrice ? 1 : 0) +
-                            (filters.maxPrice ? 1 : 0) +
-                            (filters.availableOnly ? 1 : 0)}
-                    </span>
-
-                    <span className="text-lg">
-                        {isOpen ? "−" : "+"}
-                    </span>
+                    {activeFilterCount > 0 && (
+                        <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs text-brand font-bold">
+                            {activeFilterCount}
+                        </span>
+                    )}
+                    <span className="text-lg">{isOpen ? "−" : "+"}</span>
                 </span>
             </button>
 
@@ -114,7 +144,6 @@ export default function EquipmentFilter({
                     bg-card p-5 shadow-sm
                 `}
             >
-
                 {/* Header */}
                 <div className="mb-5 flex items-center justify-between gap-2 border-b border-border pb-4">
                     <div className="flex items-center gap-2">
@@ -129,7 +158,7 @@ export default function EquipmentFilter({
                         type="button"
                         onClick={() => setIsOpen(false)}
                         aria-label="Close filters"
-                        className="rounded-lg p-1.5 text-foreground transition hover:bg-brand/10 hover:text-brand md:hidden"
+                        className="rounded-lg p-1.5 text-foreground transition hover:bg-brand/10 hover:text-brand md:hidden cursor-pointer"
                     >
                         <X size={19} />
                     </button>
@@ -141,23 +170,26 @@ export default function EquipmentFilter({
                         Category
                     </h3>
 
-                    <div className="space-y-2">
-                        {categories.map((category) => (
-                            <label
-                                key={category}
-                                className="flex cursor-pointer items-center gap-2.5 text-sm text-foreground hover:text-brand/90"
-                            >
-                                <input
-                                    type="checkbox"
-                                    checked={filters.categories.includes(category)}
-                                    onChange={() =>
-                                        toggleArrayValue("categories", category)
-                                    }
-                                    className="size-4 cursor-pointer accent-brand"
-                                />
-                                {category}
-                            </label>
-                        ))}
+                    <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                        {categoriesList.map((cat) => {
+                            const catValue = cat.slug || cat.name;
+                            const isChecked = selectedCategory === catValue || selectedCategory === cat.name;
+
+                            return (
+                                <label
+                                    key={cat._id}
+                                    className="flex cursor-pointer items-center gap-2.5 text-sm text-foreground hover:text-brand"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        onChange={() => handleCategoryToggle(catValue)}
+                                        className="size-4 cursor-pointer accent-brand"
+                                    />
+                                    <span className="truncate">{cat.name}</span>
+                                </label>
+                            );
+                        })}
                     </div>
                 </section>
 
@@ -168,19 +200,22 @@ export default function EquipmentFilter({
                     </h3>
 
                     <div className="flex items-center gap-2 rounded-lg border border-border px-3 focus-within:border-brand">
-                        <MapPin
-                            size={15}
-                            className="shrink-0 text-brand"
-                        />
+                        <MapPin size={15} className="shrink-0 text-brand" />
 
                         <input
                             type="text"
-                            placeholder="e.g. Dhaka, Sylhet..."
-                            value={filters.location}
-                            onChange={(e) =>
-                                updateFilter({ location: e.target.value })
-                            }
-                            className="w-full min-w-0 bg-transparent py-2 text-sm text-foreground outline-none placeholder:text-foreground/90"
+                            placeholder="e.g. Dhaka, Chittagong..."
+                            value={locationInput}
+                            onChange={(e) => setLocationInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    updateQuery({ location: locationInput.trim() });
+                                }
+                            }}
+                            onBlur={() => {
+                                updateQuery({ location: locationInput.trim() });
+                            }}
+                            className="w-full min-w-0 bg-transparent py-2 text-sm text-foreground outline-none placeholder:text-foreground/70"
                         />
                     </div>
                 </section>
@@ -194,18 +229,16 @@ export default function EquipmentFilter({
                     <div className="space-y-2">
                         {rentalTypes.map((type) => (
                             <label
-                                key={type}
+                                key={type.value}
                                 className="flex cursor-pointer items-center gap-2.5 text-sm text-foreground hover:text-brand"
                             >
                                 <input
                                     type="checkbox"
-                                    checked={filters.rentalTypes.includes(type)}
-                                    onChange={() =>
-                                        toggleArrayValue("rentalTypes", type)
-                                    }
+                                    checked={selectedRentalType === type.value}
+                                    onChange={() => handleRentalTypeToggle(type.value)}
                                     className="size-4 cursor-pointer accent-brand"
                                 />
-                                {type}
+                                {type.label}
                             </label>
                         ))}
                     </div>
@@ -221,11 +254,17 @@ export default function EquipmentFilter({
                         <input
                             type="number"
                             min="0"
-                            placeholder="$ Min"
-                            value={filters.minPrice}
-                            onChange={(e) =>
-                                updateFilter({ minPrice: e.target.value })
-                            }
+                            placeholder="৳ Min"
+                            value={minPriceInput}
+                            onChange={(e) => setMinPriceInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    updateQuery({ minPrice: minPriceInput });
+                                }
+                            }}
+                            onBlur={() => {
+                                updateQuery({ minPrice: minPriceInput });
+                            }}
                             className="w-full min-w-0 rounded-lg border border-border px-3 py-2 text-sm outline-none transition focus:border-brand"
                         />
 
@@ -234,11 +273,17 @@ export default function EquipmentFilter({
                         <input
                             type="number"
                             min="0"
-                            placeholder="$ Max"
-                            value={filters.maxPrice}
-                            onChange={(e) =>
-                                updateFilter({ maxPrice: e.target.value })
-                            }
+                            placeholder="৳ Max"
+                            value={maxPriceInput}
+                            onChange={(e) => setMaxPriceInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    updateQuery({ maxPrice: maxPriceInput });
+                                }
+                            }}
+                            onBlur={() => {
+                                updateQuery({ maxPrice: maxPriceInput });
+                            }}
                             className="w-full min-w-0 rounded-lg border border-border px-3 py-2 text-sm outline-none transition focus:border-brand"
                         />
                     </div>
@@ -253,12 +298,8 @@ export default function EquipmentFilter({
                     <label className="flex cursor-pointer items-center gap-2.5 text-sm text-foreground hover:text-brand">
                         <input
                             type="checkbox"
-                            checked={filters.availableOnly}
-                            onChange={(e) =>
-                                updateFilter({
-                                    availableOnly: e.target.checked,
-                                })
-                            }
+                            checked={selectedAvailability === "available"}
+                            onChange={handleAvailabilityToggle}
                             className="size-4 cursor-pointer accent-brand"
                         />
                         Available Only
@@ -269,7 +310,7 @@ export default function EquipmentFilter({
                 <button
                     type="button"
                     onClick={clearFilters}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-semibold text-foreground transition-all duration-300 hover:border-brand hover:bg-orange-50 hover:text-brand active:scale-[0.98]"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-sm font-semibold text-foreground transition-all duration-300 hover:border-brand hover:bg-brand/5 hover:text-brand active:scale-[0.98] cursor-pointer"
                 >
                     <RotateCcw size={14} />
                     Clear All Filters
@@ -279,11 +320,10 @@ export default function EquipmentFilter({
                 <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="mt-3 w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700 lg:hidden"
+                    className="mt-3 w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white transition hover:bg-brand/90 lg:hidden cursor-pointer"
                 >
                     Apply Filters
                 </button>
-
             </aside>
         </div>
     );

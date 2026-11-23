@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import Image from "next/image";
 import {
     ArrowRight,
@@ -11,58 +11,30 @@ import {
     Tag,
     Sparkles,
     ClipboardList,
-    CheckCircle2,
 } from "lucide-react";
+import { getEquipmentById } from "@/lib/api/equipments";
+import { EquipmentType } from "@/lib/type/equipmentType";
+import { formatPrice } from "@/lib/formatPrice";
+import ImageGallery from "./ImageGallery";
+import { format } from "date-fns";
+import AddFavoritesBtn from "./AddFavoritesBtn";
 
-const rentalTerms = [
-    "Equipment must be returned in the same condition.",
-    "Late return may incur additional charges.",
-    "Damage caused during rental will be the renter's responsibility.",
-    "Cancellation is allowed up to 24 hours before the rental start date.",
-];
 
-const MainDetails = () => {
-    const [favorite, setFavorite] = useState(false);
-    const [rentalType, setRentalType] = useState("Daily");
+
+const MainDetails = async ({ itemId }: { itemId: string }) => {
+
+    // const [favorite, setFavorite] = useState(false);
+    // const [rentalType, setRentalType] = useState("Daily");
+    const equipment: EquipmentType = await getEquipmentById(itemId);
+
+
+
     return (
         <>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-[0.95fr_1.25fr]">
 
                 {/* Image Gallery */}
-                <div className="space-y-3">
-                    <div className="group relative aspect-4/3 overflow-hidden rounded-2xl border border-border bg-card">
-                        <Image
-                            src={'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=900&q=85'}
-                            alt="Excavator machine"
-                            width={500}
-                            height={500}
-                            className="size-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                        />
-
-                        {/* Availability */}
-                        <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
-                            <span className="size-2 animate-pulse rounded-full bg-white" />
-                            Available
-                        </div>
-
-                        {/* Favorite */}
-                        <button
-                            onClick={() => setFavorite(!favorite)}
-                            aria-label="Toggle favorite"
-                            className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full bg-background/90 shadow-md backdrop-blur transition-all duration-300 hover:scale-110"
-                        >
-                            <Heart
-                                size={19}
-                                className={`transition-all duration-300 ${favorite
-                                    ? "fill-rose-500 text-rose-500 scale-110"
-                                    : "text-rose-500"
-                                    }`}
-                            />
-                        </button>
-                    </div>
-
-
-                </div>
+                <ImageGallery equipment={equipment} />
 
                 {/* Equipment Information */}
                 <div className="min-w-0 space-y-4">
@@ -70,7 +42,7 @@ const MainDetails = () => {
                     {/* Title + Rating */}
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                            Excavator Machine
+                            {equipment?.equipmentName}
                         </h1>
 
                         <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -92,23 +64,12 @@ const MainDetails = () => {
 
                     {/* Description */}
                     <p className="max-w-2xl text-sm leading-6 text-foreground/80">
-                        Powerful and reliable excavator machine for construction and
-                        heavy-duty work. Ideal for digging, demolition and large-scale
-                        projects.
+                        {equipment?.description}
                     </p>
 
                     {/* Action Buttons */}
                     <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                        <button
-                            onClick={() => setFavorite(!favorite)}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary transition-all duration-300 hover:bg-primary/10 hover:-translate-y-0.5 cursor-pointer"
-                        >
-                            <Heart
-                                size={17}
-                                className={favorite ? "fill-primary" : ""}
-                            />
-                            {favorite ? "Added to Favorites" : "Add to Favorites"}
-                        </button>
+                        <AddFavoritesBtn equipmentId={equipment._id as string} />
 
                         <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-brand/30 cursor-pointer">
                             <CalendarDays size={17} />
@@ -119,12 +80,12 @@ const MainDetails = () => {
                     {/* Equipment Info */}
                     <div className="divide-y divide-border border-y border-border py-1">
                         <InfoRow icon={<Sparkles size={16} />} label="Category">
-                            Construction Equipment
+                            {equipment?.categoryName}
                         </InfoRow>
 
                         <InfoRow icon={<Tag size={16} />} label="Rental Price">
-                            <span className="font-bold">$120</span>
-                            <span className="text-xs text-muted-foreground">/ day</span>
+                            <span className="font-bold">${formatPrice(equipment?.rentalPrice)}</span>
+                            <span className="text-xs text-muted-foreground">/ {equipment?.rentalType}</span>
                         </InfoRow>
 
                         {/* Rental Type */}
@@ -138,8 +99,7 @@ const MainDetails = () => {
                                 {["Daily", "Weekly", "Monthly"].map((type) => (
                                     <button
                                         key={type}
-                                        onClick={() => setRentalType(type)}
-                                        className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-all duration-200 ${rentalType === type
+                                        className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-all duration-200 ${'daily' === type
                                             ? "border-primary bg-primary text-primary-foreground shadow-sm"
                                             : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"
                                             }`}
@@ -151,37 +111,50 @@ const MainDetails = () => {
                         </div>
 
                         <InfoRow icon={<MapPin size={16} />} label="Location">
-                            Dhaka, Bangladesh
+                            {equipment?.location}
                         </InfoRow>
 
                         <InfoRow icon={<Package size={16} />} label="Available Quantity">
-                            <span className="font-bold">5 Units</span>
+                            <span className="font-bold">{equipment?.quantity} Units</span>
                         </InfoRow>
                     </div>
 
                     {/* Owner Card */}
                     <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-3.5 sm:flex-row sm:items-center">
                         <div className="flex min-w-0 flex-1 items-center gap-3">
-                            <Image
-                                src="https://plus.unsplash.com/premium_photo-1689539137236-b68e436248de?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
-                                alt="Equipment owner"
-                                width={100}
-                                height={100}
-                                className="size-11 shrink-0 rounded-full object-cover ring-2 ring-primary/10"
-                            />
+                            {
+                                equipment.owner?.image ?
+
+                                    <Image
+                                        src={equipment.owner?.image as string}
+                                        alt="Equipment owner"
+                                        width={100}
+                                        height={100}
+                                        className="size-11 shrink-0 rounded-full object-cover ring-2 ring-primary/10"
+                                    />
+
+                                    :
+
+                                    <div className="size-11 flex items-center justify-center text-white shrink-0 rounded-full bg-brand shadow-md shadow-brand/30">
+                                        <p className="text-sm font-bold text-white">{equipment.owner?.name.charAt(0).toUpperCase()}</p>
+                                    </div>
+
+                            }
 
                             <div className="min-w-0">
                                 <p className="text-[10px] text-muted-foreground">
-                                    Owner
+                                    {equipment.owner?.role}
                                 </p>
 
                                 <p className="flex flex-wrap items-center gap-1 text-sm font-bold">
-                                    Rakib Hasan
+                                    {equipment.owner?.name}
                                     <BadgeCheck size={14} className="fill-primary text-primary-foreground" />
                                 </p>
 
                                 <p className="text-[10px] text-muted-foreground">
-                                    Member Since: 2023
+                                    Member Since: {equipment.owner?.createdAt
+                                        ? format(new Date(equipment.owner?.createdAt), "yyyy")
+                                        : "N/A"}
                                 </p>
                             </div>
                         </div>
@@ -207,18 +180,9 @@ const MainDetails = () => {
                 </div>
 
                 <ul className="space-y-2.5">
-                    {rentalTerms.map((term) => (
-                        <li
-                            key={term}
-                            className="flex items-start gap-2.5 text-[14px] font-medium leading-5 text-foreground/80"
-                        >
-                            <CheckCircle2
-                                size={15}
-                                className="mt-0.5 shrink-0 fill-brand text-white"
-                            />
-                            {term}
-                        </li>
-                    ))}
+                    <p className="text-[14px] font-medium leading-5 text-foreground/80">
+                        {equipment?.terms}
+                    </p>
                 </ul>
             </section>
         </>

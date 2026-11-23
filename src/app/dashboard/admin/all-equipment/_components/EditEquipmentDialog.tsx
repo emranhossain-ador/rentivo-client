@@ -22,7 +22,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { EquipmentType } from "@/lib/type/equipmentType";
-import { categories } from "@/data/categoryData";
+import { getCategories } from "@/lib/api/categoris";
+import { CategoryType } from "@/lib/type/categoryType";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { updateEquipment } from "@/lib/actions/equipment";
@@ -40,11 +41,21 @@ export default function EditEquipmentDialog({
 }: EditEquipmentDialogProps) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const [categoriesList, setCategoriesList] = useState<CategoryType[]>([]);
+
+    useEffect(() => {
+        const fetchCats = async () => {
+            const data = await getCategories();
+            setCategoriesList(data || []);
+        };
+        fetchCats();
+    }, []);
 
     const [formData, setFormData] = useState({
         equipmentName: "",
         description: "",
         categoryName: "",
+        categorySlug: "",
         location: "",
         rentalPrice: 0,
         rentalType: "daily",
@@ -61,6 +72,7 @@ export default function EditEquipmentDialog({
                 equipmentName: equipment.equipmentName || "",
                 description: equipment.description || "",
                 categoryName: equipment.categoryName || "",
+                categorySlug: equipment.categorySlug || "",
                 location: equipment.location || "",
                 rentalPrice: equipment.rentalPrice || 0,
                 rentalType: equipment.rentalType || "daily",
@@ -79,6 +91,16 @@ export default function EditEquipmentDialog({
         >
     ) => {
         const { name, value } = e.target;
+
+        if (name === "categoryName") {
+            const matchedCategory = categoriesList.find((c) => c.name === value);
+            setFormData((prev) => ({
+                ...prev,
+                categoryName: value,
+                categorySlug: matchedCategory?.slug || prev.categorySlug,
+            }));
+            return;
+        }
 
         setFormData((prev) => ({
             ...prev,
@@ -191,9 +213,11 @@ export default function EditEquipmentDialog({
                                     >
                                         <option value="">Select Category</option>
                                         {
-                                            categories.map((category, i) =>
-                                                <option key={i} value={category.name}>{category.name}</option>
-                                            )
+                                            categoriesList.map((category) => (
+                                                <option key={category._id} value={category.name}>
+                                                    {category.name}
+                                                </option>
+                                            ))
                                         }
                                     </select>
                                 </div>
