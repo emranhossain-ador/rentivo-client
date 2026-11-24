@@ -5,11 +5,13 @@ type InputType = {
     className?: string;
     placeholder?: string;
     min?: string;
+    id?: string;
 }
 
-export const Input = ({ type = 'text', name, placeholder, className, value, min }: InputType) => {
+export const Input = ({ type = 'text', id, name, placeholder, className, value, min }: InputType) => {
     return (
         <input
+            id={id}
             type={type}
             name={name}
             min={min}

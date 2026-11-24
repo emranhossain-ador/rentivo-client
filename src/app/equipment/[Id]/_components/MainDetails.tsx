@@ -18,15 +18,13 @@ import { formatPrice } from "@/lib/formatPrice";
 import ImageGallery from "./ImageGallery";
 import { format } from "date-fns";
 import AddFavoritesBtn from "./AddFavoritesBtn";
+import BookingBtn from "./BookingBtn";
 
 
 
 const MainDetails = async ({ itemId }: { itemId: string }) => {
 
-    // const [favorite, setFavorite] = useState(false);
-    // const [rentalType, setRentalType] = useState("Daily");
     const equipment: EquipmentType = await getEquipmentById(itemId);
-
 
 
     return (
@@ -69,12 +67,9 @@ const MainDetails = async ({ itemId }: { itemId: string }) => {
 
                     {/* Action Buttons */}
                     <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                        <AddFavoritesBtn equipmentId={equipment._id as string} />
+                        <AddFavoritesBtn equipmentId={equipment._id as string} quantity={equipment.quantity} />
 
-                        <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-brand/30 cursor-pointer">
-                            <CalendarDays size={17} />
-                            Book Now
-                        </button>
+                        <BookingBtn equipment={equipment} />
                     </div>
 
                     {/* Equipment Info */}
@@ -96,17 +91,11 @@ const MainDetails = async ({ itemId }: { itemId: string }) => {
                             </div>
 
                             <div className="flex flex-wrap gap-1.5">
-                                {["Daily", "Weekly", "Monthly"].map((type) => (
-                                    <button
-                                        key={type}
-                                        className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-all duration-200 ${'daily' === type
-                                            ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                                            : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"
-                                            }`}
-                                    >
-                                        {type}
-                                    </button>
-                                ))}
+                                <button
+                                    className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition-all duration-200 border-border bg-card hover:border-primary/40 hover:bg-primary/5 capitalize`}
+                                >
+                                    {equipment.rentalType}
+                                </button>
                             </div>
                         </div>
 

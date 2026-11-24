@@ -162,6 +162,10 @@
     @apply h-12 w-full rounded-xl border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10;
   }
 
+  .input{
+    @apply h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition-all placeholder:text-foreground/80 hover:border-brand/50 focus:border-brand focus:ring-4 focus:ring-brand/10;
+  }
+
 }
 
 @utility section-container {

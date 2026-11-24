@@ -4,6 +4,8 @@ import { useState } from "react";
 import { EquipmentType } from "@/lib/type/equipmentType";
 import { Heart } from "lucide-react";
 import Image from "next/image";
+import AvailabilityBadge from "@/components/ui/AvailabilityBadge";
+import UnavailabilityBadge from "@/components/ui/UnavailabilityBadge";
 
 interface ImageGalleryProps {
     equipment: EquipmentType;
@@ -12,7 +14,6 @@ interface ImageGalleryProps {
 const ImageGallery = ({ equipment }: ImageGalleryProps) => {
     const images = equipment?.images ?? [];
     const [selectedImage, setSelectedImage] = useState<string>(images[0] || "");
-    const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
     const isAvailable = equipment?.quantity > 0;
 
@@ -36,13 +37,7 @@ const ImageGallery = ({ equipment }: ImageGalleryProps) => {
                 )}
 
                 {/* Availability Badge */}
-                <div
-                    className={`absolute left-3 top-3 sm:left-4 sm:top-4 inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/20 px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-semibold text-white shadow-lg ${isAvailable ? "bg-emerald-500" : "bg-rose-500"
-                        }`}
-                >
-                    <span className="size-2 animate-pulse rounded-full bg-white" />
-                    {isAvailable ? "Available" : "Unavailable"}
-                </div>
+                {isAvailable ? <AvailabilityBadge /> : <UnavailabilityBadge />}
             </div>
 
             {/* Thumbnail Grid */}

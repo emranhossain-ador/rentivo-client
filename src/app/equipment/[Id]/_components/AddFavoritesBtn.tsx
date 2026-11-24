@@ -3,14 +3,14 @@
 
 import { addFavorite, checkFavorite } from "@/lib/actions/favorite";
 import { useSession } from "@/lib/auth-client";
-import { Check, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const AddFavoritesBtn = ({
-    equipmentId,
+    equipmentId, quantity
 }: {
-    equipmentId: string;
+    equipmentId: string, quantity: number
 }) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -90,6 +90,8 @@ const AddFavoritesBtn = ({
         }
     };
 
+    const isOutOfStock = quantity <= 0;
+
     return (
         <button
             onClick={handleAddFavorites}
@@ -98,7 +100,8 @@ const AddFavoritesBtn = ({
                 !isCustomer ||
                 isFavorite ||
                 loading ||
-                checking
+                checking ||
+                isOutOfStock
             }
             className="inline-flex items-center justify-center cursor-pointer gap-2 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm font-semibold text-primary transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/10 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-primary/5"
         >
@@ -111,13 +114,15 @@ const AddFavoritesBtn = ({
                 <Heart size={17} />
             )}
 
-            {checking
-                ? "Checking..."
-                : loading
-                    ? "Adding..."
-                    : isFavorite
-                        ? "Added to Favorites"
-                        : "Add to Favorites"}
+            {isOutOfStock
+                ? "Out of Stock"
+                : checking
+                    ? "Checking..."
+                    : loading
+                        ? "Adding..."
+                        : isFavorite
+                            ? "Added to Favorites"
+                            : "Add to Favorites"}
         </button>
     );
 };
