@@ -28,7 +28,7 @@ import Image from "next/image";
 import { EquipmentType } from "@/lib/type/equipmentType";
 import { formatPrice } from "@/lib/formatPrice";
 import { useSession } from "@/lib/auth-client";
-import { checkAvailableDate, createBooking } from "@/lib/actions/booking";
+import { BookingData, checkAvailableDate, createBooking } from "@/lib/actions/booking";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
@@ -61,19 +61,19 @@ const parseDayKey = (dayKey: string) => new Date(`${dayKey}T00:00:00`);
 const bookedQuantityOn = (
     ranges: BookedRange[],
     dayKey: string
-  ) =>
+) =>
     ranges.reduce((total, range) => {
-      if (!range.startDate || !range.endDate) return total;
-  
-      const isBooked =
-        dayKey >= range.startDate &&
-        dayKey < range.endDate;
-  
-      return isBooked
-        ? total + (Number(range.quantity) || 0)
-        : total;
+        if (!range.startDate || !range.endDate) return total;
+
+        const isBooked =
+            dayKey >= range.startDate &&
+            dayKey < range.endDate;
+
+        return isBooked
+            ? total + (Number(range.quantity) || 0)
+            : total;
     }, 0);
-  
+
 
 /** Units still free on the given day. */
 const availableQuantityOn = (ranges: BookedRange[], dayKey: string, totalUnits: number) =>
@@ -90,33 +90,33 @@ const findUnavailableDay = (
     endKey: string,
     quantity: number,
     totalUnits: number
-  ) => {
+) => {
     if (!startKey || !endKey || startKey >= endKey) {
-      return null;
+        return null;
     }
-  
+
     const cursor = parseDayKey(startKey);
     const last = parseDayKey(endKey);
-  
+
     while (cursor < last) {
-      const dayKey = toDayKey(cursor);
-  
-      const available = availableQuantityOn(
-        ranges,
-        dayKey,
-        totalUnits
-      );
-  
-      if (available < quantity) {
-        return dayKey;
-      }
-  
-      cursor.setDate(cursor.getDate() + 1);
+        const dayKey = toDayKey(cursor);
+
+        const available = availableQuantityOn(
+            ranges,
+            dayKey,
+            totalUnits
+        );
+
+        if (available < quantity) {
+            return dayKey;
+        }
+
+        cursor.setDate(cursor.getDate() + 1);
     }
-  
+
     return null;
-  };
-  
+};
+
 
 
 const calculateRentalAmount = (
@@ -172,26 +172,26 @@ export default function BookingModal({ equipment, onOpenChange, open }: BookingM
     const checkingAvailability = !!open && !!equipmentId && loadedFor !== equipmentId;
 
 
-const isEndDateDisabled = (date: Date) => {
-    const dayKey = toDayKey(date);
-  
-    if (dayKey < todayKey || dayKey <= startDate) {
-      return true;
-    }
-  
-    if (!startDate) return false;
-  
-    return (
-      findUnavailableDay(
-        bookedRanges,
-        startDate,
-        dayKey,
-        requestedQuantity,
-        equipment.quantity
-      ) !== null
-    );
-  };
-  
+    const isEndDateDisabled = (date: Date) => {
+        const dayKey = toDayKey(date);
+
+        if (dayKey < todayKey || dayKey <= startDate) {
+            return true;
+        }
+
+        if (!startDate) return false;
+
+        return (
+            findUnavailableDay(
+                bookedRanges,
+                startDate,
+                dayKey,
+                requestedQuantity,
+                equipment.quantity
+            ) !== null
+        );
+    };
+
 
     // Fetch the already booked dates (with quantities) every time the modal opens
     useEffect(() => {
@@ -402,36 +402,35 @@ const isEndDateDisabled = (date: Date) => {
             }
         }
 
-        const data = {
-            equipmentId: equipment._id,
-            userId: user?.id,
+        const data: BookingData = {
+            equipmentId: equipment._id as string,
+            userId: user!.id,
             startDate,
             endDate,
             quantity: Number(quantity),
             contactNumber: contactNumber.trim(),
             deliveryAddress: deliveryAddress.trim(),
             notes: notes.trim(),
-            rentalDays,
-            totalAmount,
         };
 
-       
+
         try {
-            const result = await createBooking(data);
-        
-            if (result.success) {
-            toast.success(result.message);
-            handleOpenChange(false);
-            } else {
-            toast.error(result.message);
-            }
+            setLoading(true);
+
+            await createBooking(data);
+
         } catch (error) {
             console.error("Booking error:", error);
-            toast.error("Booking failed. Please try again.");
-        } finally {
+
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Booking failed. Please try again."
+            );
+
             setLoading(false);
         }
-  
+
     };
 
 
@@ -635,23 +634,23 @@ const isEndDateDisabled = (date: Date) => {
                                 min={1}
                                 max={equipment.quantity}
                                 value={quantity}
-                                
+
                                 onChange={(e) => {
                                     const value = Number(e.target.value);
-                                
+
                                     if (!Number.isInteger(value) || value < 1) {
-                                    setQuantity(1);
-                                    return;
+                                        setQuantity(1);
+                                        return;
                                     }
-                                
+
                                     if (value > equipment.quantity) {
-                                    toast.error("Requested quantity exceeds total stock.");
-                                    return;
+                                        toast.error("Requested quantity exceeds total stock.");
+                                        return;
                                     }
-                                
+
                                     setQuantity(value);
                                 }}
-                                
+
                                 className="pl-10! input"
                             />
                         </div>
