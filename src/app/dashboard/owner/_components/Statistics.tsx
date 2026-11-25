@@ -1,6 +1,8 @@
 
+import { getOwnerBookings } from "@/lib/api/booking";
 import { getEquipmentByOwnerId } from "@/lib/api/equipments";
 import { getSession } from "@/lib/core/server";
+import { BookingType } from "@/lib/type/booking";
 import {
     ArrowUpRight,
     Box,
@@ -10,12 +12,44 @@ import {
 } from "lucide-react";
 
 
+const formatAmount = (amount: number) => {
+    if (amount >= 10000000) {
+        return `${(amount / 10000000).toFixed(1).replace(/\.0$/, "")} Cr`;
+    }
+
+    if (amount >= 100000) {
+        return `${(amount / 100000).toFixed(1).replace(/\.0$/, "")} L`;
+    }
+
+    if (amount >= 1000) {
+        return `${(amount / 1000).toFixed(1).replace(/\.0$/, "")} K`;
+    }
+
+    return amount.toString();
+};
+
 const Statistics = async () => {
     const session = await getSession();
     const user = session?.user;
 
     // quipment Get 
     const equipment = await getEquipmentByOwnerId(user?.id as string);
+
+    // Total Bookings
+    const totalBooking = await getOwnerBookings(user?.id as string);
+
+    // Active Rentals
+    const activeRentals = totalBooking.filter(
+        (booking: BookingType) => booking.status === "confirmed"
+    ).length;
+
+    // Total Revenue (Only Paid)
+    const totalRevenue = totalBooking
+        .filter((booking: BookingType) => booking.paymentStatus === "paid")
+        .reduce(
+            (acc: number, booking: BookingType) => acc + booking.totalAmount,
+            0
+        );
 
     return (
         <section className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 lg:grid-cols-4 lg:gap-4">
@@ -74,7 +108,7 @@ const Statistics = async () => {
 
                     <div className="min-w-0">
                         <h3 className="text-xl font-extrabold tracking-tight text-foreground sm:text-2xl">
-                            5
+                            {totalBooking.length}
                         </h3>
                         <p className="truncate text-xs font-medium text-foreground/90 sm:text-sm">
                             Total Bookings
@@ -118,7 +152,7 @@ const Statistics = async () => {
 
                     <div className="min-w-0">
                         <h3 className="text-xl font-extrabold tracking-tight text-foreground sm:text-2xl">
-                            5
+                            {activeRentals}
                         </h3>
                         <p className="truncate text-xs font-medium text-foreground/90 sm:text-sm">
                             Active Rentals
@@ -162,7 +196,7 @@ const Statistics = async () => {
 
                     <div className="min-w-0">
                         <h3 className="text-xl font-extrabold tracking-tight text-foreground sm:text-2xl">
-                            ৳45,800
+                            ৳ {formatAmount(totalRevenue)}
                         </h3>
                         <p className="truncate text-xs font-medium text-foreground/90 sm:text-sm">
                             Total Earnings

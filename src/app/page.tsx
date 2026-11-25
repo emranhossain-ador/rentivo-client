@@ -5,8 +5,10 @@ import HeroSection from "@/components/home/HeroSection";
 import HowItWorks from "@/components/home/HowItWorks";
 import OverlappingBottomHero from "@/components/home/OverlappingBottomHero";
 import RentalCTA from "@/components/home/RentalCTA";
+import RentalCTASkeleton from "@/components/home/RentalCTASkeleton";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import PopularCategories from "@/components/PopularCategories";
+import { Suspense } from "react";
 
 export default function Home() {
   return (
@@ -18,7 +20,9 @@ export default function Home() {
       <WhyChooseUs />
       <HowItWorks />
       <CustomerReviews />
-      <RentalCTA />
+      <Suspense fallback={<RentalCTASkeleton />}>
+        <RentalCTA />
+      </Suspense>
     </main>
   );
 }

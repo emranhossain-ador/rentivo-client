@@ -1,7 +1,10 @@
 
 
+import { formatAmount } from "@/components/PriceFormatAmount";
+import { getAllBookingsForAdmin } from "@/lib/api/booking";
 import { getAllEquipments } from "@/lib/api/equipments";
 import { getUsers } from "@/lib/api/users";
+import { BookingType } from "@/lib/type/booking";
 import {
     Users,
     UserRoundCheck,
@@ -18,6 +21,12 @@ const AdminStatistics = async () => {
 
     //Get All Equipments
     const equipments = await getAllEquipments();
+
+
+    const bookingData: BookingType[] = await getAllBookingsForAdmin();
+
+    const totalBooking = bookingData.filter(booking => booking.status === 'confirmed').length;
+    const totalRevenue = bookingData.reduce((sum, booking) => sum + booking.totalAmount, 0);
 
 
     return (
@@ -125,7 +134,7 @@ const AdminStatistics = async () => {
                         Total Bookings
                     </p>
                     <h3 className="mt-1 text-2xl font-bold tracking-tight">
-                        640
+                        {totalBooking}
                     </h3>
                     <p className="mt-2 text-xs text-muted-foreground">
                         All rental bookings
@@ -153,7 +162,7 @@ const AdminStatistics = async () => {
                         Total Revenue
                     </p>
                     <h3 className="mt-1 text-2xl font-bold tracking-tight">
-                        ৳8,50,000
+                        ৳ {formatAmount(totalRevenue)}
                     </h3>
                     <p className="mt-2 text-xs text-muted-foreground">
                         Total platform earnings

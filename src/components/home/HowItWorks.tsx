@@ -42,7 +42,7 @@ const steps = [
 
 export default function HowItWorks() {
     return (
-        <section className="relative isolate overflow-hidden py-16 sm:py-20 lg:py-24">
+        <section id="how-it-works" className="relative isolate overflow-hidden py-16 sm:py-20 lg:py-24">
 
             {/* Background Decorations */}
             <div className="pointer-events-none absolute -right-32 top-0 -z-10 size-105 rounded-full bg-brand/5 blur-3xl" />
@@ -140,39 +140,12 @@ export default function HowItWorks() {
                         <div className="relative aspect-[4/3] overflow-hidden rounded-[35px] border-[5px] border-card shadow-2xl">
 
                             <Image
-                                src="/images/equipment/how-it-works.jpg"
+                                src="/image/how-it-work.png"
                                 alt="Rent construction equipment easily"
                                 fill
                                 sizes="(max-width: 1024px) 100vw, 42vw"
-                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                className="object-fill transition-transform duration-700 group-hover:scale-105"
                             />
-
-                            {/* Image Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 to-transparent" />
-
-                            {/* Promotional Text */}
-                            <div className="absolute left-5 top-1/2 max-w-[65%] -translate-y-1/2 sm:left-8">
-
-                                <p className="font-heading text-3xl font-bold italic leading-tight text-white sm:text-4xl lg:text-5xl">
-                                    Rent Smart,
-                                </p>
-
-                                <p className="mt-1 font-heading text-3xl font-bold italic leading-tight text-brand sm:text-4xl lg:text-5xl">
-                                    Work Better!
-                                </p>
-
-                                <div className="mt-4 h-1 w-32 rotate-[-12deg] rounded-full bg-brand sm:w-40" />
-
-                                {/* Play Button */}
-                                <Link
-                                    href="/how-it-works"
-                                    aria-label="Learn how equipment rental works"
-                                    className="mt-7 flex size-14 items-center justify-center rounded-full border-2 border-brand bg-white text-brand shadow-lg transition-all duration-300 hover:scale-110 hover:bg-brand hover:text-white sm:size-16"
-                                >
-                                    <Play size={25} fill="currentColor" />
-                                </Link>
-
-                            </div>
 
                         </div>
 

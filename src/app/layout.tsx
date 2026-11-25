@@ -25,7 +25,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${openSans.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${openSans.variable} ${spaceGrotesk.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col">
         <script

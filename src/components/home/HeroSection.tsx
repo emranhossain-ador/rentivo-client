@@ -109,7 +109,7 @@ export default function HeroSection() {
                                 <ArrowRight className="size-4.5" />
                             </Link>
                             <Link
-                                href="/how-it-works"
+                                href="#how-it-works"
                                 className={cn(
                                     buttonVariants({
                                         variant: "outline",

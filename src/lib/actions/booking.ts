@@ -65,3 +65,17 @@ export const verifyPayment = async (sessionId: string): Promise<VerifyPaymentRes
 };
 
 
+export const updateBookingByAdmin = async (bookingId: string, data: { status: string; paymentStatus: string }) => {
+    const response = await fetch(
+        `${API_BASE_URL}/admin/bookings/${bookingId}`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        }
+    );
+
+    return response.json();
+}

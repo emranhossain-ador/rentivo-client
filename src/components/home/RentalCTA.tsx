@@ -1,16 +1,17 @@
 
 import Link from "next/link";
 import { ArrowRight, Megaphone } from "lucide-react";
-import Image from "next/image";
+import { getUsers } from "@/lib/api/users";
+import { UserType } from "@/lib/type/userType";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-const users = [
-    { id: 1, image: "https://plus.unsplash.com/premium_photo-1688350808212-4e6908a03925?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" },
-    { id: 2, image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" },
-    { id: 3, image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" },
-    { id: 4, image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" },
-];
 
-export default function RentalCTA() {
+export default async function RentalCTA() {
+
+    const users: UserType[] = await getUsers();
+
+    const owners = users.filter(user => user.role === 'owner');
+
     return (
         <section className="section-container w-full py-5 ">
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -69,37 +70,37 @@ export default function RentalCTA() {
                     {/* Text */}
                     <div className="relative z-10 min-w-0">
                         <h2 className="font-heading-grotesk text-base font-bold tracking-tight text-foreground sm:text-xl">
-                            Trusted by 10,000+ Users
+                            Trusted by {users.length.toLocaleString()}+ Users
                         </h2>
 
                         <p className="mt-1.5 text-xs leading-relaxed text-foreground/80 sm:text-sm">
-                            A growing community of renters and owners.
+                            A growing community of {users.filter(user => user.role === "customer").length.toLocaleString()} renters and {owners.length.toLocaleString()} owners.
                         </p>
                     </div>
 
-                    {/* User Avatars */}
+                    {/* Owner Avatars */}
                     <div className="relative z-10 flex shrink-0 items-center pl-2">
                         <div className="flex -space-x-3 sm:-space-x-4">
-                            {users.map((user) => (
-                                <div
-                                    key={user.id}
-                                    className="relative size-9 overflow-hidden rounded-full border-[2.5px] border-white bg-gray-200 shadow-sm transition-transform duration-300 hover:z-20 hover:-translate-y-2 sm:size-12"
-                                >
-                                    <Image
-                                        src={user.image}
-                                        alt="Community member"
-                                        width={36}
-                                        height={36}
-                                        className="size-full object-cover"
+                            {owners.slice(0, 5).map((owner) => (
+                                <Avatar key={owner._id} className="size-9 border-[2.5px] border-white shadow-sm transition-transform duration-300 hover:-translate-y-2 sm:size-12">
+                                    <AvatarImage
+                                        src={owner.image || ""}
+                                        alt={owner.name || "Equipment owner"}
                                     />
-                                </div>
+
+                                    <AvatarFallback className="bg-violet-100 text-xs font-bold uppercase text-violet-700 sm:text-sm">
+                                        {owner.name?.trim()?.charAt(0) || "U"}
+                                    </AvatarFallback>
+                                </Avatar>
                             ))}
                         </div>
 
-                        {/* 10K Badge */}
-                        <div className="relative z-20 -ml-2 flex size-10 items-center justify-center rounded-full border-2 border-white bg-white text-[10px] font-extrabold text-[#28206D] shadow-md transition-transform duration-300 group-hover:scale-110 sm:size-12 sm:text-xs">
-                            +10K
-                        </div>
+                        {/* Remaining Owner Count */}
+                        {owners.length > 5 && (
+                            <div className="relative z-20 -ml-2 flex size-10 items-center justify-center rounded-full border-2 border-white bg-white text-[10px] font-extrabold text-[#28206D] shadow-md transition-transform duration-300 group-hover:scale-110 sm:size-12 sm:text-xs">
+                                +{owners.length - 5}
+                            </div>
+                        )}
                     </div>
                 </div>
 

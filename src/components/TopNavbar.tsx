@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
-import { Menu, Moon, Sun, User, UserPlus, Wrench, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, Moon, Sun, User, UserPlus, X } from "lucide-react";
 import { cn } from "cn";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -16,8 +15,8 @@ type Theme = "light" | "dark";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "All Equipment", href: "/equipment" },
-  { label: "Categories", href: "/categories" },
   { label: "About Us", href: "/about" },
+  { label: "Contact Us", href: "/contact" },
 ] as const;
 
 const NAV_LINK_CLASS = "flex items-center px-4 py-2 font-medium hover:text-brand text-sm whitespace-nowrap transition-colors text-foreground";
@@ -177,7 +176,6 @@ const TopNavbar = () => {
           }
 
 
-
           <button
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -214,18 +212,28 @@ const TopNavbar = () => {
                 onChange={handleThemeChange}
                 className="flex w-fit"
               />
-              <div className="flex gap-3">
-                <Link href={'/sign-in'}
-                  className="h-12 flex-1 gap-2 rounded-full font-semibold flex items-center justify-center border border-border text-foreground hover:border-brand/60 hover:text-brand"
-                >
-                  <User className="size-4" />
-                  Login
-                </Link>
-                <Link href={'/sign-up'} className="h-12 flex-1 gap-2 rounded-full flex items-center justify-center bg-brand font-semibold text-white hover:bg-brand/90 ">
-                  <UserPlus className="size-4" />
-                  Register
-                </Link>
-              </div>
+              {
+                user ?
+                  <></>
+                  :
+                  <div className="flex gap-3">
+                    <Link href={'/sign-in'}
+                      onClick={() => setMobileOpen(false)}
+                      className="h-12 flex-1 gap-2 rounded-full font-semibold flex items-center justify-center border border-border text-foreground hover:border-brand/60 hover:text-brand"
+                    >
+                      <User className="size-4" />
+                      Login
+                    </Link>
+                    <Link href={'/sign-up'}
+                      onClick={() => setMobileOpen(false)}
+                      className="h-12 flex-1 gap-2 rounded-full flex items-center justify-center bg-brand font-semibold text-white hover:bg-brand/90 ">
+                      <UserPlus className="size-4" />
+                      Register
+                    </Link>
+                  </div>
+              }
+
+
             </div>
           </nav>
         </div>
