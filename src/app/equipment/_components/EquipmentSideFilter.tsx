@@ -22,19 +22,15 @@ export default function EquipmentFilter() {
     // Read current state from URL search params
     const selectedCategory = searchParams.get("category") || "";
     const selectedRentalType = searchParams.get("rentalType") || "";
-    const selectedLocation = searchParams.get("location") || "";
     const selectedMinPrice = searchParams.get("minPrice") || "";
     const selectedMaxPrice = searchParams.get("maxPrice") || "";
     const selectedAvailability = searchParams.get("availability") || "";
 
     // Local inputs for debounce/typing
-    const [locationInput, setLocationInput] = useState(selectedLocation);
     const [minPriceInput, setMinPriceInput] = useState(selectedMinPrice);
     const [maxPriceInput, setMaxPriceInput] = useState(selectedMaxPrice);
 
-    useEffect(() => {
-        setLocationInput(selectedLocation);
-    }, [selectedLocation]);
+
 
     useEffect(() => {
         setMinPriceInput(selectedMinPrice);
@@ -96,7 +92,6 @@ export default function EquipmentFilter() {
         params.delete("minPrice");
         params.delete("maxPrice");
         params.delete("availability");
-        setLocationInput("");
         setMinPriceInput("");
         setMaxPriceInput("");
         router.push(`?${params.toString()}`, { scroll: false });
@@ -105,7 +100,6 @@ export default function EquipmentFilter() {
     const activeFilterCount =
         (selectedCategory ? 1 : 0) +
         (selectedRentalType ? 1 : 0) +
-        (selectedLocation ? 1 : 0) +
         (selectedMinPrice ? 1 : 0) +
         (selectedMaxPrice ? 1 : 0) +
         (selectedAvailability ? 1 : 0);
@@ -170,7 +164,7 @@ export default function EquipmentFilter() {
                         Category
                     </h3>
 
-                    <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    <div className="space-y-2 max-h-56 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-background">
                         {categoriesList.map((cat) => {
                             const catValue = cat.slug || cat.name;
                             const isChecked = selectedCategory === catValue || selectedCategory === cat.name;
@@ -190,33 +184,6 @@ export default function EquipmentFilter() {
                                 </label>
                             );
                         })}
-                    </div>
-                </section>
-
-                {/* Location */}
-                <section className="mb-5 border-b border-border pb-5">
-                    <h3 className="mb-3 text-xs font-bold uppercase tracking-wide text-foreground">
-                        Location
-                    </h3>
-
-                    <div className="flex items-center gap-2 rounded-lg border border-border px-3 focus-within:border-brand">
-                        <MapPin size={15} className="shrink-0 text-brand" />
-
-                        <input
-                            type="text"
-                            placeholder="e.g. Dhaka, Chittagong..."
-                            value={locationInput}
-                            onChange={(e) => setLocationInput(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    updateQuery({ location: locationInput.trim() });
-                                }
-                            }}
-                            onBlur={() => {
-                                updateQuery({ location: locationInput.trim() });
-                            }}
-                            className="w-full min-w-0 bg-transparent py-2 text-sm text-foreground outline-none placeholder:text-foreground/70"
-                        />
                     </div>
                 </section>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
@@ -46,27 +47,12 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="lg:pr-8">
                         <Link href="/" className="group inline-flex items-center gap-3">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-600 text-foreground shadow-lg shadow-orange-600/20 transition duration-300 group-hover:rotate-[-8deg] group-hover:bg-orange-500">
-                                <svg
-                                    className="h-6 w-6"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="m14.7 6.3 3-3a2.1 2.1 0 0 1 3 3l-3 3" />
-                                    <path d="m16.5 7.5-10 10" />
-                                    <path d="m5 19 3-3" />
-                                    <path d="m3 21 2-2" />
-                                    <path d="m8 16 3 3" />
-                                    <path d="M7 17H4a2 2 0 0 0-2 2v2h2a2 2 0 0 0 2-2v-2Z" />
-                                </svg>
+                            <div className="flex h-full w-14 items-center justify-center ">
+                                <Image src={'/image/logo.png'} alt="logo" width={100} height={100} className="w-full h-full object-contain" />
                             </div>
 
                             <span className="text-2xl font-extrabold tracking-tight">
-                                Rental<span className="text-orange-500">Hub</span>
+                                Rentivo
                             </span>
                         </Link>
 
