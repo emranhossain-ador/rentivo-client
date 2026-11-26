@@ -1,22 +1,28 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { getSession } from './lib/core/server'
 
-// This function can be marked `async` if using `await` inside
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getSession } from "./lib/core/server";
+
 export async function proxy(request: NextRequest) {
-
     const session = await getSession();
     const user = session?.user;
 
     if (!user) {
-        return NextResponse.redirect(new URL('/sign-in', request.url))
+        const signInUrl = new URL("/sign-in", request.url);
+        signInUrl.searchParams.set(
+            "callbackUrl",
+            request.nextUrl.pathname
+        );
+
+        return NextResponse.redirect(signInUrl);
     }
 
+    return NextResponse.next();
 }
-
-// Alternatively, you can use a default export:
-// export default function proxy(request: NextRequest) { ... }
 
 export const config = {
-    matcher: ['/equipment/:path', '/dashboard/:path*',],
-}
+    matcher: [
+        "/equipment/:path*",
+        "/dashboard/:path*",
+    ],
+};

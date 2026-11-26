@@ -26,7 +26,7 @@ const EquimentTable = async () => {
 
                             <thead className="bg-muted/50">
                                 <tr className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                    <th className="px-5 py-4">Equipment {favoritesData?.total}</th>
+                                    <th className="px-5 py-4">Equipment</th>
                                     <th className="px-4 py-4">Category</th>
                                     <th className="px-4 py-4">Rental Price</th>
                                     <th className="px-4 py-4">Location</th>

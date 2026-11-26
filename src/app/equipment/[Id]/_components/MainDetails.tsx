@@ -148,10 +148,10 @@ const MainDetails = async ({ itemId }: { itemId: string }) => {
                             </div>
                         </div>
 
-                        <button className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border border-primary/40 px-4 py-2 text-xs font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground">
+                        {/* <button className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border border-primary/40 px-4 py-2 text-xs font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground">
                             View Profile
                             <ArrowRight size={14} />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>

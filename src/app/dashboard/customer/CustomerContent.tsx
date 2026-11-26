@@ -1,12 +1,5 @@
-import Link from "next/link";
-import {
-    CalendarDays,
-    CheckCircle2,
-    ArrowRight,
-    MapPin,
-} from "lucide-react";
+
 import Statistics from "./_components/Statistics";
-import Image from "next/image";
 import Header from "@/components/dashboard/Header";
 import { getSession } from "@/lib/core/server";
 
@@ -22,9 +15,8 @@ const CustomerContent = async () => {
             <Statistics />
 
             {/* Main dashboard content */}
-            <section className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-5">
+            {/* <section className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-5">
 
-                {/* Upcoming Bookings */}
                 <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm lg:col-span-7">
 
                     <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
@@ -49,7 +41,6 @@ const CustomerContent = async () => {
                     <div className="p-3 sm:p-4">
                         <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-3 transition hover:border-brand hover:shadow-sm sm:flex-row sm:items-start sm:p-4">
 
-                            {/* Equipment image */}
                             <div className="relative h-44 w-full shrink-0 overflow-hidden rounded-xl bg-accent sm:h-32 sm:w-36">
                                 <Image
                                     src="https://images.unsplash.com/photo-1580901369227-308f6f40bdeb?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
@@ -59,8 +50,6 @@ const CustomerContent = async () => {
                                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
                                 />
                             </div>
-
-                            {/* Booking details */}
                             <div className="flex min-w-0 flex-1 flex-col">
                                 <div className="flex flex-wrap items-center gap-2">
                                     <h3 className="text-sm font-bold text-foreground sm:text-base">
@@ -99,7 +88,7 @@ const CustomerContent = async () => {
                     </div>
                 </div>
 
-            </section>
+            </section> */}
         </>
     )
 };
