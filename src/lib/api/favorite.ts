@@ -13,9 +13,10 @@ export interface FavoritesType {
 
 
 import { API_BASE_URL } from "./apiBaseUrl"
+import { authFetch } from "../core/server";
 
 export const getMyFavoriteItemsByUserId = async (userId: string) => {
-    const res = await fetch(`${API_BASE_URL}/favorites/${userId}`);
+    const res = await authFetch(`${API_BASE_URL}/favorites/${userId}`);
     return res.json();
 
 }

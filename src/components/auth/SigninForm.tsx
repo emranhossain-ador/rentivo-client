@@ -31,7 +31,7 @@ const SigninForm = () => {
 
 
     const searchParams = useSearchParams();
-    const redirectTo = searchParams.get('redirectTo') ?? "/";
+    const redirectTo = searchParams.get('redirectTo') || "/";
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -67,7 +67,8 @@ const SigninForm = () => {
                 } else {
                     form.reset();
                     toast.success("Login successfull");
-                    router.push(redirectTo);
+                    router.replace(redirectTo);
+                    router.refresh();
                 }
 
 

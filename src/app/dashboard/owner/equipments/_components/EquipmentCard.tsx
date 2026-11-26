@@ -4,6 +4,7 @@ import EquipmentDeleteDialog from "@/components/dashboard/EquipmentDeleteDialog"
 import { EquipmentType } from "@/lib/type/equipmentType";
 import { Boxes, CheckCircle2, Clock3, DollarSign, Eye, LucideIcon, MapPin, Package, Pencil, Tag, Trash2, XCircle } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const formatPrice = (price: number) =>
@@ -132,13 +133,12 @@ const EquipmentCard = ({ equipment }: { equipment: EquipmentType }) => {
 
                 {/* Actions */}
                 <div className="grid grid-cols-3 gap-2 border-t border-border pt-3">
-                    <button
-                        type="button"
+                    <Link href={`/equipment/${equipment._id}`} target="_blank"
                         className="flex items-center justify-center gap-1.5 rounded-xl border border-sky-600/30 px-2 py-2.5 text-xs font-semibold text-sky-500 transition hover:bg-sky-500 hover:text-white"
                     >
                         <Eye size={15} />
                         View
-                    </button>
+                    </Link>
 
                     <button
                         type="button"

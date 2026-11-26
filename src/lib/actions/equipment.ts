@@ -1,6 +1,7 @@
 
 import { API_BASE_URL } from "../api/apiBaseUrl";
 import { EquipmentType } from "../type/equipmentType";
+import { authHeaders } from "../core/client";
 
 
 export const addEquipment = async (data: EquipmentType) => {
@@ -8,6 +9,7 @@ export const addEquipment = async (data: EquipmentType) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            ...(await authHeaders()),
         },
         body: JSON.stringify(data),
     });
@@ -34,6 +36,7 @@ export const updateEquipment = async (
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
+            ...(await authHeaders()),
         },
         body: JSON.stringify(data),
     });
@@ -52,6 +55,7 @@ export const updateEquipment = async (
 export const deleteEquipment = async (id: string) => {
     const res = await fetch(`${API_BASE_URL}/equipment/${id}`, {
         method: "DELETE",
+        headers: await authHeaders(),
     });
 
     const result = await res.json();
@@ -78,6 +82,7 @@ export const updateEquipmentStatus = async (id: string, status: EquipmentStatus)
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                ...(await authHeaders()),
             },
             body: JSON.stringify({ status }),
         }

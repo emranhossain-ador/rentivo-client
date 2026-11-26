@@ -160,7 +160,7 @@ const SignupForm = () => {
                     form.reset();
                     setPassword('');
                     toast.success("Registration Successful");
-                    router.push('/sign-in');
+                    router.push('/');
                 }
             } catch (err) {
                 toast.error("Something went wrong!");

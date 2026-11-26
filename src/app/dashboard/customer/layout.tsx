@@ -1,6 +1,11 @@
-import { requireRole } from "@/lib/core/server";
+import DashboardLoader from "@/components/dashboard/DashboardLoader";
+import { Suspense } from "react";
+import CustomerAuth from "./_components/CustomerAuth";
 
 export default async function CustomerLayout({ children }: { children: React.ReactNode }) {
-    await requireRole("customer");
-    return <>{children}</>
+    return (
+        <Suspense fallback={<DashboardLoader />}>
+            <CustomerAuth>{children}</CustomerAuth>
+        </Suspense>
+    )
 }

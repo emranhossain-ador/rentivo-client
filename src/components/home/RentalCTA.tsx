@@ -1,16 +1,15 @@
 
 import Link from "next/link";
 import { ArrowRight, Megaphone } from "lucide-react";
-import { getUsers } from "@/lib/api/users";
-import { UserType } from "@/lib/type/userType";
+import { getPublicStats } from "@/lib/api/stats";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 
 export default async function RentalCTA() {
 
-    const users: UserType[] = await getUsers();
+    const { total, owners: ownerCount, customers, ownerAvatars } = await getPublicStats();
 
-    const owners = users.filter(user => user.role === 'owner');
+    const owners = ownerAvatars;
 
     return (
         <section className="section-container w-full py-5 ">
@@ -70,11 +69,11 @@ export default async function RentalCTA() {
                     {/* Text */}
                     <div className="relative z-10 min-w-0">
                         <h2 className="font-heading-grotesk text-base font-bold tracking-tight text-foreground sm:text-xl">
-                            Trusted by {users.length.toLocaleString()}+ Users
+                            Trusted by {total.toLocaleString()}+ Users
                         </h2>
 
                         <p className="mt-1.5 text-xs leading-relaxed text-foreground/80 sm:text-sm">
-                            A growing community of {users.filter(user => user.role === "customer").length.toLocaleString()} renters and {owners.length.toLocaleString()} owners.
+                            A growing community of {customers.toLocaleString()} renters and {ownerCount.toLocaleString()} owners.
                         </p>
                     </div>
 
@@ -96,9 +95,9 @@ export default async function RentalCTA() {
                         </div>
 
                         {/* Remaining Owner Count */}
-                        {owners.length > 5 && (
+                        {ownerCount > 5 && (
                             <div className="relative z-20 -ml-2 flex size-10 items-center justify-center rounded-full border-2 border-white bg-white text-[10px] font-extrabold text-[#28206D] shadow-md transition-transform duration-300 group-hover:scale-110 sm:size-12 sm:text-xs">
-                                +{owners.length - 5}
+                                +{ownerCount - 5}
                             </div>
                         )}
                     </div>

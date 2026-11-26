@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "../api/apiBaseUrl";
+import { authHeaders } from "../core/client";
 
 export const addFavorite = async (equipmentId: string, userId: string) => {
     const res = await fetch(
@@ -6,9 +7,10 @@ export const addFavorite = async (equipmentId: string, userId: string) => {
         {
             method: "POST",
             headers: {
-                "content-type": "application/json"
+                "content-type": "application/json",
+                ...(await authHeaders()),
             },
-            body: JSON.stringify({ equipmentId, userId })
+            body: JSON.stringify({ equipmentId, userId }),
         }
     );
 
@@ -19,7 +21,12 @@ export const addFavorite = async (equipmentId: string, userId: string) => {
 
 
 export const checkFavorite = async (equipmentId: string, userId: string) => {
-    const res = await fetch(`${API_BASE_URL}/favorites/${equipmentId}/${userId}`,);
+    const res = await fetch(
+        `${API_BASE_URL}/favorites/${equipmentId}/${userId}`,
+        {
+            headers: await authHeaders(),
+        }
+    );
 
     const result = await res.json();
 
@@ -40,6 +47,7 @@ export const removeFavorite = async (
         `${API_BASE_URL}/favorites/${favoriteId}/${userId}`,
         {
             method: "DELETE",
+            headers: await authHeaders(),
         }
     );
 

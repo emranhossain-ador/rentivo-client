@@ -10,7 +10,7 @@ import {
 
 const DashboardLoader = () => {
     return (
-        <div className="fixed inset-0 z-9999 flex min-h-screen items-center justify-center overflow-hidden bg-background">
+        <div className="fixed w-full inset-0 z-9999 flex min-h-screen items-center justify-center overflow-hidden bg-background">
 
             {/* Background Decoration */}
             <div className="absolute inset-0 overflow-hidden">

@@ -1,5 +1,6 @@
 
 import { API_BASE_URL } from "../api/apiBaseUrl"
+import { authHeaders } from "../core/client"
 
 
 export type BookingData = {
@@ -20,6 +21,7 @@ export const createBooking = async (data: BookingData) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                ...(await authHeaders()),
             },
             body: JSON.stringify(data),
         }
@@ -72,6 +74,7 @@ export const updateBookingByAdmin = async (bookingId: string, data: { status: st
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                ...(await authHeaders()),
             },
             body: JSON.stringify(data),
         }

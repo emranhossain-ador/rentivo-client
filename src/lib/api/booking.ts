@@ -1,7 +1,8 @@
 import { API_BASE_URL } from "./apiBaseUrl";
+import { authFetch } from "../core/server";
 
 export const getBookingsByUserId = async (userId: string) => {
-    const response = await fetch(
+    const response = await authFetch(
         `${API_BASE_URL}/bookings/user/${userId}`
     );
 
@@ -16,7 +17,7 @@ export const getBookingsByUserId = async (userId: string) => {
 
 
 export const getOwnerBookings = async (ownerId: string) => {
-    const response = await fetch(
+    const response = await authFetch(
         `${API_BASE_URL}/owner/bookings/${ownerId}`
     );
 
@@ -31,7 +32,7 @@ export const getOwnerBookings = async (ownerId: string) => {
 
 
 export const getAllBookingsForAdmin = async () => {
-    const response = await fetch(`${API_BASE_URL}/admin/bookings`);
+    const response = await authFetch(`${API_BASE_URL}/admin/bookings`);
 
     const result = await response.json();
 

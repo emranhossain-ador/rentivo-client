@@ -1,9 +1,12 @@
+"use server";
+
 import { redirect } from "next/navigation";
 import { API_BASE_URL } from "../api/apiBaseUrl";
 import { EquipmentType } from "../type/equipmentType";
+import { authFetch } from "../core/server";
 
 export const getEquipmentByOwnerId = async (ownerId: string): Promise<EquipmentType[]> => {
-    const res = await fetch(
+    const res = await authFetch(
         `${API_BASE_URL}/equipment/owner/${ownerId}`
     );
 
@@ -18,14 +21,10 @@ export const getEquipmentByOwnerId = async (ownerId: string): Promise<EquipmentT
 
 
 export const getEquipmentById = async (id: string) => {
-    const res = await fetch(`${API_BASE_URL}/equipment/${id}`);
+    const api = `${API_BASE_URL}/equipment/${id}`;
+    const res = await authFetch(api);
 
     const result = await res.json();
-
-    if (!res.ok) {
-        redirect('/not-found')
-    }
-
     return result.data;
 };
 
