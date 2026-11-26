@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { API_BASE_URL } from "../api/apiBaseUrl";
 import { EquipmentType } from "../type/equipmentType";
 
@@ -9,7 +10,7 @@ export const getEquipmentByOwnerId = async (ownerId: string): Promise<EquipmentT
     const result = await res.json();
 
     if (!res.ok) {
-        throw new Error(result.message || "Failed to fetch equipment");
+        redirect('/not-found')
     }
 
     return result.data;
@@ -22,7 +23,7 @@ export const getEquipmentById = async (id: string) => {
     const result = await res.json();
 
     if (!res.ok) {
-        throw new Error(result.message || "Failed to fetch equipment");
+        redirect('/not-found')
     }
 
     return result.data;
