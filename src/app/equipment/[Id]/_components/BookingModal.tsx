@@ -437,10 +437,10 @@ export default function BookingModal({ equipment, onOpenChange, open }: BookingM
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="max-h-[92dvh] w-[95vw] max-w-2xl! overflow-y-auto rounded-2xl border-border bg-background p-0 scrollbar-thin scrollbar-thumb-card">
+            <DialogContent className="max-h-[92dvh] w-full max-w-2xl! overflow-y-auto rounded-2xl border-border bg-background p-0 scrollbar-thin scrollbar-thumb-card">
 
                 {/* Header */}
-                <div className="border-b border-border px-5 py-5 sm:px-7">
+                <div className="border-b border-border px-4 py-5 sm:px-7">
                     <DialogHeader>
                         <div className="mb-2 flex items-center gap-2">
                             <span className="rounded-lg bg-primary/10 p-2 text-primary">
